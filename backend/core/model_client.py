@@ -12,7 +12,7 @@ def get_llm_instance(temperature: float = 0.7):
     llm = ChatOpenAI(
         model_name=MODEL_IDENTIFIER,
         openai_api_base=MODEL_API_BASE_URL,
-        openai_api_key="not-needed",  # Gerekirse environment'tan çekilebilir
+        
         temperature=temperature
     )
     return llm
