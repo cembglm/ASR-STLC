@@ -1,0 +1,2828 @@
+Directory structure:
+└── cembglm-stlc-manager/
+    ├── README.md
+    ├── backend/
+    │   ├── app.py
+    │   ├── config.py
+    │   ├── requirements.txt
+    │   ├── core/
+    │   │   ├── __init__.py
+    │   │   ├── database.py
+    │   │   ├── file_handler.py
+    │   │   ├── model_client.py
+    │   │   └── prompt_manager.py
+    │   ├── pipeline/
+    │   │   ├── __init__.py
+    │   │   ├── pipeline_controller.py
+    │   │   └── pipeline_executor.py
+    │   ├── stlc/
+    │   │   ├── __init__.py
+    │   │   ├── code_review.py
+    │   │   ├── environment_setup.py
+    │   │   ├── requirement_analysis.py
+    │   │   ├── test_case_generation.py
+    │   │   ├── test_case_optimization.py
+    │   │   ├── test_closure.py
+    │   │   ├── test_code_generation.py
+    │   │   ├── test_execution.py
+    │   │   ├── test_planning.py
+    │   │   ├── test_reporting.py
+    │   │   ├── test_scenario_generation.py
+    │   │   └── test_scenario_optimization.py
+    │   └── utils/
+    │       ├── __init__.py
+    │       ├── text_splitter.py
+    │       └── validation.py
+    └── frontend/
+        ├── index.html
+        ├── package-lock.json
+        ├── package.json
+        ├── postcss.config.js
+        ├── tailwind.config.js
+        ├── .env
+        ├── dist/
+        │   ├── index.html
+        │   └── assets/
+        │       ├── index-deaf439d.js
+        │       └── index-deba1743.css
+        └── src/
+            ├── App.jsx
+            ├── index.css
+            ├── main.jsx
+            ├── components/
+            │   ├── FileUpload.jsx
+            │   ├── Footer.jsx
+            │   ├── Header.jsx
+            │   ├── Navigation.jsx
+            │   ├── OutputDisplay.jsx
+            │   ├── OutputPanel.jsx
+            │   ├── Pipeline.jsx
+            │   ├── PipelineView.jsx
+            │   ├── ProcessInformation.jsx
+            │   ├── ProcessList.jsx
+            │   ├── ProcessPanel.jsx
+            │   ├── ProcessSelector.jsx
+            │   ├── ProcessTable.jsx
+            │   ├── PromptEditor.jsx
+            │   ├── Section.jsx
+            │   ├── Sidebar.jsx
+            │   ├── StatusSection.jsx
+            │   └── TabPanel.jsx
+            ├── data/
+            │   ├── processes.js
+            │   └── sections.js
+            └── services/
+                └── openai.js
+
+================================================
+File: README.md
+================================================
+# STLC Manager
+
+Bu proje, **Software Testing Life Cycle (STLC)** adımlarını yönetmek ve otomasyonunu sağlamak amacıyla oluşturulmuş bir Full Stack örneğidir.  
+**STLC** aşağıdaki 12 adımı içerir (ancak dilediğiniz gibi özelleştirilebilir):
+
+1. Code Review  
+2. Requirement Analysis  
+3. Test Planning  
+4. Test Scenario Generation  
+5. Test Scenario Optimization  
+6. Test Case Generation  
+7. Test Case Optimization  
+8. Test Code Generation  
+9. Environment Setup  
+10. Test Execution  
+11. Test Reporting  
+12. Test Closure  
+
+Bu adımların her biri tek başına (tek adım) veya bir **pipeline** (çoklu adım) olarak çalıştırılabilir.
+
+## Proje Dizini
+
+```
+STLC-Manager/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── FileUpload.jsx
+│   │   │   ├── Header.jsx
+│   │   │   ├── Pipeline.jsx
+│   │   │   ├── ProcessPanel.jsx
+│   │   │   └── ...
+│   │   ├── services/
+│   │   │   └── openai.js
+│   │   ├── main.jsx
+│   │   ├── App.jsx
+│   │   └── ...
+│   ├── public/
+│   │   └── index.html
+│   ├── package.json
+│   └── ...
+└── backend/
+    ├── app.py
+    ├── config.py
+    ├── requirements.txt
+    ├── core/
+    │   ├── __init__.py
+    │   ├── database.py
+    │   ├── file_handler.py
+    │   ├── model_client.py
+    │   └── prompt_manager.py
+    ├── pipeline/
+    │   ├── __init__.py
+    │   ├── pipeline_controller.py
+    │   └── pipeline_executor.py
+    ├── stlc/
+    │   ├── __init__.py
+    │   ├── code_review.py
+    │   ├── requirement_analysis.py
+    │   ├── test_planning.py
+    │   ├── test_scenario_generation.py
+    │   ├── test_scenario_optimization.py
+    │   ├── test_case_generation.py
+    │   ├── test_case_optimization.py
+    │   ├── test_code_generation.py
+    │   ├── environment_setup.py
+    │   ├── test_execution.py
+    │   ├── test_reporting.py
+    │   └── test_closure.py
+    └── utils/
+        ├── __init__.py
+        ├── text_splitter.py
+        └── validation.py
+```
+
+### Frontend (React)
+- **src/components/**: Bileşenler (ör. `FileUpload`, `Pipeline`, `OutputPanel`)  
+- **src/services/**: API çağrılarını yöneten servis fonksiyonları (`openai.js` vs.)  
+- **.env** (isteğe bağlı): Backend API URL gibi konfigürasyonları barındırır.  
+- **main.jsx / App.jsx**: Uygulamanın ana giriş noktası ve yönlendirme.
+
+### Backend (FastAPI)
+- **app.py**: FastAPI uygulamasının ana dosyası.  
+- **config.py**: Ortak yapılandırma ve environment değişkenleri (Mongo URI, model URL vb.).  
+- **requirements.txt**: Backend bağımlılıkları.
+
+#### **core/**
+- **database.py**: MongoDB bağlantısı ve temel veritabanı işlemleri.  
+- **file_handler.py**: Dosya yükleme, PDF/DOCX/TXT metin çıkarma fonksiyonları.  
+- **model_client.py**: LLM (Large Language Model) çağrısını yönetir.  
+- **prompt_manager.py**: MongoDB’den system prompt, query_str gibi verileri çekmek.
+
+#### **pipeline/**
+- **pipeline_controller.py**: UI’den gelen STLC adım seçimlerini işleyerek hangi adımların sırayla çalıştırılacağını belirler.  
+- **pipeline_executor.py**: Seçilen adımları sırasıyla çalıştırır ve sonuçlarını birleştirir.
+
+#### **stlc/**
+- Her adım için (`code_review`, `requirement_analysis`, `test_planning` vb.) ayrı bir dosya.  
+- `run_step(input_data)` fonksiyonuyla her adım tek başına veya pipeline içinde çağrılabilir.
+
+#### **utils/**
+- **text_splitter.py**: Metin parçalama (chunking) işlemleri.  
+- **validation.py**: LLM çıktılarının (structured_output) istenen formata uygunluğunu doğrulama.
+
+## Akış Diyagramı (Mermaid)
+
+Aşağıda, bir pipeline çalıştırma senaryosunun genel akışını gösteren basit bir **Mermaid** diyagramı bulunuyor:
+
+```mermaid
+flowchart LR
+    A[UI / Frontend] --> B[Pipeline Controller]
+    B --> C[Pipeline Executor]
+    C --> D[STLC Adım 1 (Ör: Test Planning)]
+    C --> E[STLC Adım 2 (Ör: Test Case Generation)]
+    C --> F[STLC Adım 3 (Ör: Test Reporting)]
+    D --> C
+    E --> C
+    F --> G[Nihai Sonuç Dönüşü]
+```
+
+1. **UI / Frontend**: Kullanıcı, hangi STLC adımlarının seçileceğini belirler (checkbox vb.).  
+2. **Pipeline Controller**: Seçilen adımları analiz eder, sırayı belirler.  
+3. **Pipeline Executor**: Sırayla her STLC modülünün `run_step` fonksiyonunu çağırır.  
+4. **STLC Adımları**: Her adım, ilgili verileri işleyerek kendi çıktısını üretir. Gerekirse bir sonraki adıma veri aktarılır.  
+5. **Nihai Sonuç**: Tüm adımlar tamamlandığında, sonuç birleşik olarak UI’a döndürülür.
+
+## Nasıl Çalıştırılır?
+
+1. **Backend Kurulumu:**
+   ```bash
+   cd STLC-Manager/backend
+   pip install -r requirements.txt
+   python app.py
+   ```
+   - Uygulama varsayılan olarak `http://0.0.0.0:8000` üzerinde çalışacaktır.
+
+2. **Frontend Kurulumu:**
+   ```bash
+   cd STLC-Manager/frontend
+   npm install
+   npm run dev
+   ```
+   - Varsayılan olarak `http://localhost:5173` vb. bir portta çalışır (Vite/CRA ayarlarına göre değişebilir).
+
+3. **Env Değişkenleri (Örnek .env Dosyası):**
+   ```
+   # Backend
+   MONGO_URI=mongodb://localhost:27017
+   MODEL_API_BASE_URL=http://localhost:1234
+   MODEL_IDENTIFIER=llama-3.2-3b-instruct
+
+   # Frontend
+   REACT_APP_API_BASE_URL=http://localhost:8000
+   ```
+   - İhtiyaçlarınıza göre özelleştirin.
+
+4. **Kullanım Senaryoları:**
+   - **Tek Adım**: Örneğin, `Test Planning` adımını tek başına çalıştırmak için UI’daki ilgili sayfadan dosya yükleyip “Çalıştır” butonuna basabilirsiniz.  
+   - **Pipeline**: Checkbox’larla birden fazla adım (örn. `Test Planning`, `Test Case Generation`, `Test Reporting`) seçilip “Pipeline Çalıştır” denildiğinde, adımlar sırasıyla çalıştırılır ve toplu sonuç ekranda gösterilir.
+
+## Katkıda Bulunma
+
+- Yeni STLC adımları eklemek için `stlc` klasörüne `.py` dosyası ekleyip `run_step` fonksiyonunu tanımlayın.  
+- Yeni bir model veya farklı bir vektör veritabanı eklemek için `core/model_client.py` veya `core/database.py` dosyalarında değişiklik yapın.  
+- Pull Request’ler, bug raporları ve geliştirme önerileri memnuniyetle karşılanır!
+
+## Lisans
+
+Bu proje örnek bir yapıdır ve kendi kullanımınız için özelleştirebilirsiniz. Lisans koşullarını proje sahibiyle veya ekibinizle belirleyin.
+
+
+================================================
+File: backend/app.py
+================================================
+""" 
+app.py
+------
+FastAPI uygulamasının ana giriş noktası. Burada FastAPI instance’ı tanımlanır, 
+STLC adımlarına ait router’lar eklenir ve uygulama başlatılır.
+"""
+
+import uvicorn
+from fastapi import FastAPI
+
+# STLC modüllerine ait router’lar ileride buraya import edilecek
+# from stlc import code_review, requirement_analysis, ...
+
+app = FastAPI(
+    title="STLC Manager Backend",
+    description="STLC adımlarını yönetmek için oluşturulmuş FastAPI uygulaması.",
+    version="0.1.0"
+)
+
+@app.get("/")
+def read_root():
+    return {"message": "STLC Manager Backend is running!"}
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+================================================
+File: backend/config.py
+================================================
+"""
+config.py
+---------
+Uygulamanın yapılandırma ayarlarını yönetir. Örneğin, veritabanı bağlantı bilgileri,
+model API endpoint’leri, environment değişkenleri gibi bilgiler burada tutulabilir.
+"""
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL", "http://localhost:1234")
+MODEL_IDENTIFIER = os.getenv("MODEL_IDENTIFIER", "llama-3.2-3b-instruct")
+
+
+================================================
+File: backend/requirements.txt
+================================================
+# requirements.txt
+# ----------------
+# Uygulamada kullanılması planlanan temel kütüphaneler.
+# İhtiyaca göre bu listeyi genişletebilirsiniz.
+
+fastapi
+uvicorn
+pymongo
+langchain
+PyPDF2
+python-docx
+python-dotenv
+
+
+================================================
+File: backend/core/__init__.py
+================================================
+"""
+core/__init__.py
+----------------
+Uygulamanın çekirdek (core) modüllerini içeren paket tanımlayıcı.
+"""
+
+
+================================================
+File: backend/core/database.py
+================================================
+"""
+database.py
+-----------
+MongoDB bağlantısını ve temel veritabanı işlemlerini yönetir.
+Örneğin, koleksiyonlara erişim, CRUD işlemleri gibi fonksiyonları burada tanımlayabilirsiniz.
+"""
+
+from pymongo import MongoClient
+from config import MONGO_URI
+
+def get_db():
+    client = MongoClient(MONGO_URI)
+    return client["stlc_database"]  # Örnek veritabanı adı
+
+
+================================================
+File: backend/core/file_handler.py
+================================================
+"""
+file_handler.py
+---------------
+Ortak dosya yükleme ve metin çıkarma işlemlerini içerir.
+PDF, DOCX, TXT gibi farklı dosya formatlarından metin çıkarma fonksiyonları bu modülde yer alır.
+"""
+
+import os
+from io import BytesIO
+from fastapi import UploadFile
+from PyPDF2 import PdfReader
+import docx
+
+def extract_text_from_pdf(file_stream: BytesIO) -> str:
+    text = ""
+    reader = PdfReader(file_stream)
+    for page in reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text + "\n"
+    return text
+
+def extract_text_from_docx(file_stream: BytesIO) -> str:
+    doc = docx.Document(file_stream)
+    return "\n".join([para.text for para in doc.paragraphs])
+
+def extract_text_from_txt(file_stream: BytesIO) -> str:
+    return file_stream.read().decode('utf-8')
+
+def extract_text(upload_file: UploadFile) -> str:
+    ext = os.path.splitext(upload_file.filename)[1].lower()
+    content = upload_file.file.read()
+    upload_file.file.seek(0)
+    if ext == ".pdf":
+        return extract_text_from_pdf(BytesIO(content))
+    elif ext == ".docx":
+        return extract_text_from_docx(BytesIO(content))
+    elif ext == ".txt":
+        return extract_text_from_txt(BytesIO(content))
+    else:
+        return ""
+
+
+================================================
+File: backend/core/model_client.py
+================================================
+"""
+model_client.py
+---------------
+LLM (Large Language Model) çağrılarını yöneten katman.
+Örneğin, ChatOpenAI gibi modelleri buradan çağırabilirsiniz.
+"""
+
+from langchain_community.chat_models import ChatOpenAI
+from config import MODEL_API_BASE_URL, MODEL_IDENTIFIER
+
+def get_llm_instance(temperature: float = 0.7):
+    llm = ChatOpenAI(
+        model_name=MODEL_IDENTIFIER,
+        openai_api_base=MODEL_API_BASE_URL,
+        openai_api_key="not-needed",  # Gerekirse environment'tan çekilebilir
+        temperature=temperature
+    )
+    return llm
+
+
+================================================
+File: backend/core/prompt_manager.py
+================================================
+"""
+prompt_manager.py
+-----------------
+Her STLC adımı için MongoDB'den system prompt ve query_str gibi verileri çekmeye yarar.
+Ayrıca structured_output formatı gibi ilave bilgileri de buradan alabilirsiniz.
+"""
+
+from core.database import get_db
+
+def get_prompts_for_step(step_name: str):
+    db = get_db()
+    collection = db["stlc_prompts"]  # Örnek koleksiyon adı
+    document = collection.find_one({"step": step_name})
+    if document:
+        return {
+            "system_prompt": document.get("system_prompt", ""),
+            "query_str": document.get("query_str", ""),
+            "structured_output_schema": document.get("structured_output_schema", {})
+        }
+    return {}
+
+
+================================================
+File: backend/pipeline/__init__.py
+================================================
+"""
+pipeline/__init__.py
+--------------------
+STLC adımlarını ardışık (pipeline) olarak çalıştırmayı sağlayan modüllerin paket tanımlayıcısı.
+"""
+
+
+================================================
+File: backend/pipeline/pipeline_controller.py
+================================================
+"""
+pipeline_controller.py
+----------------------
+UI'den gelen checkbox veya seçim bilgilerine göre hangi STLC adımlarının çalıştırılacağını belirler.
+Bu adımların sıralamasını ve gerekli konfigürasyonu oluşturur.
+"""
+
+from typing import List
+
+def determine_pipeline(steps_selected: List[str]) -> List[str]:
+    """
+    steps_selected: UI'den gelen, seçilen STLC adımlarını içeren liste.
+    return: Ardışık çalıştırılacak adımların doğru sıralaması.
+    """
+    # Burada adımların önceliğini, zorunlu bağımlılıklarını vb. belirleyebilirsiniz.
+    return steps_selected  # Şimdilik doğrudan geri dönüyor
+
+
+================================================
+File: backend/pipeline/pipeline_executor.py
+================================================
+"""
+pipeline_executor.py
+--------------------
+determine_pipeline fonksiyonundan gelen adım listesini sırasıyla çalıştırır.
+Her adımın giriş-çıkış verilerini yönetir ve son toplu çıktıyı oluşturur.
+"""
+
+from stlc import (
+    code_review, requirement_analysis, test_planning, test_scenario_generation,
+    test_scenario_optimization, test_case_generation, test_case_optimization,
+    test_code_generation, environment_setup, test_execution, test_reporting, test_closure
+)
+from pipeline.pipeline_controller import determine_pipeline
+
+# STLC adımlarına erişmek için basit bir harita oluşturuyoruz
+STLC_MODULE_MAP = {
+    "codeReview": code_review,
+    "requirementAnalysis": requirement_analysis,
+    "testPlanning": test_planning,
+    "testScenarioGeneration": test_scenario_generation,
+    "testScenarioOptimization": test_scenario_optimization,
+    "testCaseGeneration": test_case_generation,
+    "testCaseOptimization": test_case_optimization,
+    "testCodeGeneration": test_code_generation,
+    "environmentSetup": environment_setup,
+    "testExecution": test_execution,
+    "testReporting": test_reporting,
+    "testClosure": test_closure
+}
+
+def run_pipeline(steps_selected, input_data=None):
+    pipeline_steps = determine_pipeline(steps_selected)
+    results = {}
+    for step in pipeline_steps:
+        module = STLC_MODULE_MAP.get(step)
+        if not module:
+            results[step] = {"error": f"Unknown step '{step}'"}
+            continue
+        # Her modülde run_step fonksiyonunun olduğunu varsayıyoruz
+        step_result = module.run_step(input_data)
+        results[step] = step_result
+        # Gerekirse step_result, bir sonraki adımın input_data'sı olabilir
+    return results
+
+
+================================================
+File: backend/stlc/__init__.py
+================================================
+"""
+stlc/__init__.py
+----------------
+STLC adımlarını barındıran paket tanımlayıcısı.
+Her adım kendi .py dosyasında yer alır.
+"""
+
+
+================================================
+File: backend/stlc/code_review.py
+================================================
+"""
+code_review.py
+--------------
+STLC'nin Code Review adımına ait işlemleri yönetir.
+Örneğin, LLM çağrısı yaparak kod inceleme çıktıları üretebilirsiniz.
+"""
+
+def run_step(input_data):
+    # Burada Code Review adımına ait mantık işlenir.
+    return {"step": "codeReview", "result": "Code review completed."}
+
+
+================================================
+File: backend/stlc/environment_setup.py
+================================================
+"""
+environment_setup.py
+--------------------
+STLC'nin Environment Setup adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "environmentSetup", "result": "Environment setup completed."}
+
+
+================================================
+File: backend/stlc/requirement_analysis.py
+================================================
+"""
+requirement_analysis.py
+-----------------------
+STLC'nin Requirement Analysis adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "requirementAnalysis", "result": "Requirement analysis completed."}
+
+
+================================================
+File: backend/stlc/test_case_generation.py
+================================================
+"""
+test_case_generation.py
+-----------------------
+STLC'nin Test Case Generation adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testCaseGeneration", "result": "Test case generation completed."}
+
+
+================================================
+File: backend/stlc/test_case_optimization.py
+================================================
+"""
+test_case_optimization.py
+-------------------------
+STLC'nin Test Case Optimization adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testCaseOptimization", "result": "Test case optimization completed."}
+
+
+================================================
+File: backend/stlc/test_closure.py
+================================================
+"""
+test_closure.py
+---------------
+STLC'nin Test Closure adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testClosure", "result": "Test closure completed."}
+
+
+================================================
+File: backend/stlc/test_code_generation.py
+================================================
+"""
+test_code_generation.py
+-----------------------
+STLC'nin Test Code Generation adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testCodeGeneration", "result": "Test code generation completed."}
+
+
+================================================
+File: backend/stlc/test_execution.py
+================================================
+"""
+test_execution.py
+-----------------
+STLC'nin Test Execution adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testExecution", "result": "Test execution completed."}
+
+
+================================================
+File: backend/stlc/test_planning.py
+================================================
+"""
+test_planning.py
+----------------
+STLC'nin Test Planning adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testPlanning", "result": "Test planning completed."}
+
+
+================================================
+File: backend/stlc/test_reporting.py
+================================================
+"""
+test_reporting.py
+-----------------
+STLC'nin Test Reporting adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testReporting", "result": "Test reporting completed."}
+
+
+================================================
+File: backend/stlc/test_scenario_generation.py
+================================================
+"""
+test_scenario_generation.py
+---------------------------
+STLC'nin Test Scenario Generation adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testScenarioGeneration", "result": "Test scenario generation completed."}
+
+
+================================================
+File: backend/stlc/test_scenario_optimization.py
+================================================
+"""
+test_scenario_optimization.py
+-----------------------------
+STLC'nin Test Scenario Optimization adımına ait işlemleri yönetir.
+"""
+
+def run_step(input_data):
+    return {"step": "testScenarioOptimization", "result": "Test scenario optimization completed."}
+
+
+================================================
+File: backend/utils/__init__.py
+================================================
+"""
+utils/__init__.py
+-----------------
+Ortak yardımcı fonksiyonları içeren paket tanımlayıcı.
+"""
+
+
+================================================
+File: backend/utils/text_splitter.py
+================================================
+"""
+text_splitter.py
+----------------
+Metinleri parçalara ayırma (chunking) işlemlerini içerir.
+Büyük dokümanların LLM için daha verimli hale getirilmesi amacıyla kullanılır.
+"""
+
+def split_text_into_chunks(text: str, chunk_size: int = 1000, overlap: int = 100):
+    # Örnek bir basit mantık
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = min(start + chunk_size, len(text))
+        chunks.append(text[start:end])
+        start += chunk_size - overlap
+    return chunks
+
+
+================================================
+File: backend/utils/validation.py
+================================================
+"""
+validation.py
+-------------
+LLM çıktısının (structured_output) belirli bir formata uygunluğunu kontrol eden fonksiyonları içerir.
+"""
+
+def validate_output_format(data, schema):
+    """
+    data: LLM'den gelen sonuç
+    schema: Beklenen JSON şeması veya benzeri bir yapı
+    """
+    # Burada schema doğrulama işlemi yapılabilir
+    return True
+
+
+================================================
+File: frontend/index.html
+================================================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STLC Manager</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+================================================
+File: frontend/package.json
+================================================
+{
+  "name": "stlc-manager",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "react-dropzone": "^14.2.3",
+    "clsx": "^2.0.0",
+    "@hello-pangea/dnd": "^16.3.0",
+    "react-markdown": "^8.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "vite": "^4.4.5"
+  }
+}
+
+================================================
+File: frontend/postcss.config.js
+================================================
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+================================================
+File: frontend/tailwind.config.js
+================================================
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+================================================
+File: frontend/.env
+================================================
+VITE_OPENAI_API_KEY=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
+
+================================================
+File: frontend/dist/index.html
+================================================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STLC Manager</title>
+    <script type="module" crossorigin src="/assets/index-deaf439d.js"></script>
+    <link rel="stylesheet" href="/assets/index-deba1743.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    
+  </body>
+</html>
+
+================================================
+File: frontend/dist/assets/index-deba1743.css
+================================================
+*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}html{scroll-behavior:smooth}.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}select{display:block;width:100%;border-radius:.375rem;--tw-border-opacity: 1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1));--tw-shadow: 0 1px 2px 0 rgb(0 0 0 / .05);--tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}select:focus{--tw-border-opacity: 1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1));--tw-ring-opacity: 1;--tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1))}.fixed{position:fixed}.sticky{position:sticky}.top-0{top:0}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.block{display:block}.flex{display:flex}.table{display:table}.grid{display:grid}.h-2{height:.5rem}.h-5{height:1.25rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-5{width:1.25rem}.w-64{width:16rem}.w-full{width:100%}.min-w-full{min-width:100%}.max-w-7xl{max-width:80rem}.flex-shrink-0{flex-shrink:0}.cursor-not-allowed{cursor:not-allowed}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-x-2>:not([hidden])~:not([hidden]){--tw-space-x-reverse: 0;margin-right:calc(.5rem * var(--tw-space-x-reverse));margin-left:calc(.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-8>:not([hidden])~:not([hidden]){--tw-space-x-reverse: 0;margin-right:calc(2rem * var(--tw-space-x-reverse));margin-left:calc(2rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem * var(--tw-space-y-reverse))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem * var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem * var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse: 0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-gray-200>:not([hidden])~:not([hidden]){--tw-divide-opacity: 1;border-color:rgb(229 231 235 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.border{border-width:1px}.border-2{border-width:2px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-gray-300{--tw-border-opacity: 1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.border-indigo-500{--tw-border-opacity: 1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-blue-50{--tw-bg-opacity: 1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-blue-600{--tw-bg-opacity: 1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-gray-200{--tw-bg-opacity: 1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.bg-gray-300{--tw-bg-opacity: 1;background-color:rgb(209 213 219 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity: 1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-600{--tw-bg-opacity: 1;background-color:rgb(75 85 99 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-green-600{--tw-bg-opacity: 1;background-color:rgb(22 163 74 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity: 1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-indigo-600{--tw-bg-opacity: 1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-red-600{--tw-bg-opacity: 1;background-color:rgb(220 38 38 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-4{padding-bottom:1rem}.pl-4{padding-left:1rem}.pl-5{padding-left:1.25rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-wider{letter-spacing:.05em}.text-blue-600{--tw-text-opacity: 1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-blue-700{--tw-text-opacity: 1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity: 1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity: 1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow{--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-md{--tw-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);--tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-sm{--tw-shadow: 0 1px 2px 0 rgb(0 0 0 / .05);--tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.outline{outline-style:solid}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-150{transition-duration:.15s}.duration-200{transition-duration:.2s}.duration-500{transition-duration:.5s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.hover\:border-gray-300:hover{--tw-border-opacity: 1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.hover\:bg-blue-700:hover{--tw-bg-opacity: 1;background-color:rgb(29 78 216 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-100:hover{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-700:hover{--tw-bg-opacity: 1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.hover\:bg-green-700:hover{--tw-bg-opacity: 1;background-color:rgb(21 128 61 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-700:hover{--tw-bg-opacity: 1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.hover\:bg-red-700:hover{--tw-bg-opacity: 1;background-color:rgb(185 28 28 / var(--tw-bg-opacity, 1))}.hover\:text-blue-300:hover{--tw-text-opacity: 1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.hover\:text-blue-800:hover{--tw-text-opacity: 1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.hover\:text-gray-900:hover{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.focus\:border-indigo-500:focus{--tw-border-opacity: 1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.focus\:ring-indigo-500:focus{--tw-ring-opacity: 1;--tw-ring-color: rgb(99 102 241 / var(--tw-ring-opacity, 1))}.focus\:ring-offset-2:focus{--tw-ring-offset-width: 2px}.disabled\:bg-blue-300:disabled{--tw-bg-opacity: 1;background-color:rgb(147 197 253 / var(--tw-bg-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+================================================
+File: frontend/src/App.jsx
+================================================
+import React, { useState } from 'react';
+import Header from './components/Header';
+import TabPanel from './components/TabPanel';
+import { processes } from './data/processes';
+
+export default function App() {
+  const [selectedProcesses, setSelectedProcesses] = useState(new Set());
+  const [processFiles, setProcessFiles] = useState({});
+  const [processPrompts, setProcessPrompts] = useState({});
+  const [output, setOutput] = useState(null);
+  const [pipelineStatus, setPipelineStatus] = useState({});
+  const [activeTab, setActiveTab] = useState('pipeline');
+  const [validationError, setValidationError] = useState(null);
+
+  const handleFileUpload = (processId, fileInfo) => {
+    setProcessFiles(prev => ({
+      ...prev,
+      [processId]: [...(prev[processId] || []), fileInfo]
+    }));
+  };
+
+  const handlePromptUpdate = (processId, newPrompt) => {
+    setProcessPrompts(prev => ({
+      ...prev,
+      [processId]: newPrompt
+    }));
+  };
+
+  const handleProcessSelect = (processId) => {
+    setSelectedProcesses(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(processId)) {
+        newSet.delete(processId);
+      } else {
+        newSet.add(processId);
+      }
+      return newSet;
+    });
+  };
+
+  const validatePipeline = () => {
+    const missingInputs = [];
+    
+    selectedProcesses.forEach(processId => {
+      const process = processes.find(p => p.id === processId);
+      const files = processFiles[processId] || [];
+      
+      const missingRequiredInputs = process.inputs.filter(input => {
+        return !files.some(file => file.type === input);
+      });
+      
+      if (missingRequiredInputs.length > 0) {
+        missingInputs.push({
+          process: process.name,
+          inputs: missingRequiredInputs
+        });
+      }
+    });
+    
+    return missingInputs;
+  };
+
+  const executeProcess = async (process) => {
+    try {
+      setPipelineStatus(prev => ({
+        ...prev,
+        [process.id]: 'running'
+      }));
+
+      // Simulate process execution with Promise
+      const result = await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            status: 'success',
+            content: `# ${process.name} Results\n\n## Overview\nProcess completed successfully\n\n## Details\n- Analyzed ${processFiles[process.id]?.length || 0} files\n- Generated test artifacts\n- Validated requirements\n\n## Next Steps\n1. Review generated artifacts\n2. Proceed to next phase\n3. Update documentation`,
+            timestamp: new Date().toISOString()
+          });
+        }, 2000);
+      });
+
+      setPipelineStatus(prev => ({
+        ...prev,
+        [process.id]: 'completed'
+      }));
+
+      return result;
+    } catch (error) {
+      setPipelineStatus(prev => ({
+        ...prev,
+        [process.id]: 'error'
+      }));
+      throw error;
+    }
+  };
+
+  const handleProcessRun = async () => {
+    try {
+      setValidationError(null);
+      const missingInputs = validatePipeline();
+      
+      if (missingInputs.length > 0) {
+        const errorMessage = missingInputs.map(({ process, inputs }) => 
+          `${process} is missing: ${inputs.join(', ')}`
+        ).join('\n');
+        
+        setValidationError(errorMessage);
+        return;
+      }
+
+      const selectedProcessList = Array.from(selectedProcesses);
+      for (const processId of selectedProcessList) {
+        const process = processes.find(p => p.id === processId);
+        if (process) {
+          const result = await executeProcess(process);
+          setOutput(result);
+        }
+      }
+    } catch (error) {
+      console.error('Process execution error:', error);
+      setOutput({
+        status: 'error',
+        content: 'An error occurred while executing the process. Please try again.',
+        timestamp: new Date().toISOString()
+      });
+    }
+  };
+
+  return (
+    <div className="h-screen flex flex-col bg-gray-50">
+      <Header />
+      <main className="flex-1 flex overflow-hidden">
+        <TabPanel
+          processes={processes}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          selectedProcesses={selectedProcesses}
+          onProcessSelect={handleProcessSelect}
+          processFiles={processFiles}
+          onFileUpload={handleFileUpload}
+          processPrompts={processPrompts}
+          onPromptUpdate={handlePromptUpdate}
+          pipelineStatus={pipelineStatus}
+          onRun={handleProcessRun}
+          validationError={validationError}
+          output={output}
+        />
+      </main>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/index.css
+================================================
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  select {
+    @apply block w-full rounded-md border-gray-300 shadow-sm 
+      focus:border-blue-500 focus:ring-blue-500;
+  }
+}
+
+================================================
+File: frontend/src/main.jsx
+================================================
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+
+================================================
+File: frontend/src/components/FileUpload.jsx
+================================================
+import React, { useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { clsx } from 'clsx';
+
+const fileTypes = [
+  'Technical Design Document',
+  'Requirement Document',
+  'Source Code',
+  'Previous Process Output',
+  'Test Cases',
+  'Test Scripts',
+  'Test Data',
+  'Configuration Files'
+];
+
+export default function FileUpload({ 
+  onFilesSelected, 
+  processId, 
+  existingFiles = [], 
+  allowMultiple = true 
+}) {
+  const [selectedType, setSelectedType] = useState('');
+  const [tempFiles, setTempFiles] = useState([]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (selectedType) {
+        setTempFiles(acceptedFiles);
+      } else {
+        alert('Please select a file type before uploading');
+      }
+    },
+    multiple: allowMultiple,
+    accept: {
+      'application/json': ['.json'],
+      'text/plain': ['.txt'],
+      'text/javascript': ['.js', '.jsx'],
+      'text/python': ['.py'],
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc', '.docx']
+    }
+  });
+
+  const handleSave = () => {
+    if (tempFiles.length > 0 && selectedType) {
+      tempFiles.forEach(file => {
+        onFilesSelected(processId, {
+          file,
+          type: selectedType
+        });
+      });
+      setTempFiles([]);
+      setSelectedType('');
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          File Type
+        </label>
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        >
+          <option value="">Select file type...</option>
+          {fileTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {existingFiles && existingFiles.length > 0 && (
+        <div className="bg-blue-50 p-4 rounded-md space-y-2">
+          <h4 className="text-sm font-medium text-blue-700">Uploaded Files:</h4>
+          {existingFiles.map((fileInfo, index) => (
+            <div key={index} className="text-sm text-blue-700">
+              {fileInfo.file ? `${fileInfo.file.name} (${fileInfo.type})` : `${fileInfo.type}`}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div
+        {...getRootProps()}
+        className={clsx(
+          'border-2 border-dashed rounded-lg p-4 text-center cursor-pointer',
+          isDragActive ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300'
+        )}
+      >
+        <input {...getInputProps()} />
+        <p className="text-sm text-gray-600">
+          {isDragActive ? 'Drop the files here...' : 'Drag & drop files here, or click to select'}
+        </p>
+      </div>
+
+      {tempFiles.length > 0 && (
+        <div className="space-y-2">
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Selected Files:</h4>
+            {tempFiles.map((file, index) => (
+              <div key={index} className="text-sm text-gray-600">
+                {file.name}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={handleSave}
+            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Save Files
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/Footer.jsx
+================================================
+import React from 'react';
+
+export default function Footer() {
+  return (
+    <footer className="bg-gray-800 text-white py-8" id="contact">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+            <p>Email: support@example.com</p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className="hover:text-blue-300 transition-colors duration-200">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-blue-300 transition-colors duration-200">
+                  API Reference
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-blue-300 transition-colors duration-200">
+                  Support Center
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm">
+              © {new Date().getFullYear()} Software Test Manager. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+================================================
+File: frontend/src/components/Header.jsx
+================================================
+import React from 'react';
+
+export default function Header() {
+  return (
+    <header className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Software Test Life Cycle Manager
+        </h1>
+        <p className="mt-2 text-lg text-gray-600">
+          Manage your software testing processes efficiently
+        </p>
+      </div>
+    </header>
+  );
+}
+
+================================================
+File: frontend/src/components/Navigation.jsx
+================================================
+import React from 'react';
+import { clsx } from 'clsx';
+
+export default function Navigation({ processes, selectedProcess, onProcessSelect, disabled }) {
+  return (
+    <nav className="flex-1">
+      <div className="flex space-x-4 overflow-x-auto">
+        {processes.map((process) => (
+          <button
+            key={process.id}
+            onClick={() => !disabled && onProcessSelect(process)}
+            disabled={disabled}
+            className={clsx(
+              'px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md',
+              'transition duration-150 ease-in-out',
+              disabled
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : selectedProcess.id === process.id
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+            )}
+          >
+            {process.name}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+================================================
+File: frontend/src/components/OutputDisplay.jsx
+================================================
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+
+export default function OutputDisplay({ output, className }) {
+  if (!output) return null;
+
+  return (
+    <div className={className}>
+      <h3 className="font-semibold mb-2">Output</h3>
+      <div className="bg-gray-50 rounded-lg p-4">
+        <ReactMarkdown>{output}</ReactMarkdown>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/OutputPanel.jsx
+================================================
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+
+export default function OutputPanel({ output }) {
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex-none h-16 px-6 flex items-center border-b border-gray-200 bg-white">
+        <h2 className="text-xl font-bold text-gray-900">Output</h2>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4">
+        {output ? (
+          <div className="space-y-4">
+            <section>
+              <h3 className="text-lg font-medium mb-3">Process Results</h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="prose prose-sm max-w-none text-gray-600">
+                  <ReactMarkdown>{output.content}</ReactMarkdown>
+                </div>
+              </div>
+            </section>
+            
+            <section>
+              <h3 className="text-lg font-medium mb-3">Execution Details</h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-gray-600">
+                  <p><strong>Status:</strong> {output.status}</p>
+                  <p><strong>Last Updated:</strong> {new Date(output.timestamp).toLocaleString()}</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center space-y-3">
+              <div className="text-gray-400">
+                <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-gray-500">Run a process to see the output here</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="flex-none h-16 px-6 flex items-center border-t border-gray-200 bg-white">
+        <button
+          className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-sm"
+        >
+          Install Output
+        </button>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/Pipeline.jsx
+================================================
+import React from 'react';
+import { processes } from '../data/processes';
+
+export default function Pipeline({ selectedProcesses, processFiles }) {
+  const getProcess = (id) => processes.find(p => p.id === id) || null;
+
+  return (
+    <section className="bg-white shadow rounded-lg p-6 mb-6">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Process Pipeline</h2>
+      {selectedProcesses.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          No processes added to the pipeline. Add processes to begin.
+        </div>
+      ) : (
+        <div className="flex overflow-x-auto gap-4 pb-4">
+          {selectedProcesses.map((processId, index) => {
+            const process = getProcess(processId);
+            const files = processFiles[processId] || [];
+            
+            if (!process) return null;
+
+            return (
+              <div
+                key={processId}
+                className="flex-shrink-0 w-64 bg-gray-50 rounded-lg p-4 border border-gray-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-gray-700">
+                    {index + 1}. {process.name}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600 mb-2">
+                  <div className="mb-1">
+                    <strong>Inputs:</strong>
+                    <ul className="list-disc pl-4">
+                      {process.inputs.map((input, i) => (
+                        <li key={i}>{input}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <strong>Output:</strong> {process.output}
+                  </div>
+                  {files.length > 0 && (
+                    <div className="mt-2 p-2 bg-blue-50 rounded">
+                      <strong>Files:</strong>
+                      <ul className="list-disc pl-4 mt-1">
+                        {files.map((fileInfo, i) => (
+                          <li key={i}>
+                            {fileInfo.type === 'Previous Process Output'
+                              ? 'Using previous process output'
+                              : fileInfo.file && `${fileInfo.file.name} (${fileInfo.type})`
+                            }
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <div className="h-2 bg-gray-200 rounded-full">
+                    <div
+                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      style={{ width: '0%' }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
+================================================
+File: frontend/src/components/PipelineView.jsx
+================================================
+import React from 'react';
+import { clsx } from 'clsx';
+
+export default function PipelineView({
+  processes,
+  selectedSteps,
+  onStepToggle,
+  pipelineStatus,
+  onRun
+}) {
+  return (
+    <div className="w-1/2 bg-white border-r border-gray-200 flex flex-col">
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Pipeline Configuration</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          Select the steps to include in the pipeline execution. Steps will be executed in sequence.
+        </p>
+      </div>
+
+      <div className="flex-1 p-6 overflow-auto">
+        <div className="space-y-4">
+          {processes.map((process, index) => (
+            <div
+              key={process.id}
+              className={clsx(
+                'p-4 rounded-lg border',
+                selectedSteps.has(process.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
+              )}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <div className="h-6 w-6 mr-3 flex items-center justify-center rounded-full bg-gray-200">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-900">{process.name}</h3>
+                </div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedSteps.has(process.id)}
+                    onChange={() => onStepToggle(process.id)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                </label>
+              </div>
+
+              <div className="ml-9">
+                <p className="text-sm text-gray-600 mb-2">{process.details[0]}</p>
+                <div className="flex items-center space-x-2">
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={clsx(
+                        'h-full transition-all duration-500',
+                        pipelineStatus[process.id] === 'completed'
+                          ? 'bg-green-500 w-full'
+                          : pipelineStatus[process.id] === 'running'
+                          ? 'bg-indigo-500 w-full animate-pulse'
+                          : 'w-0'
+                      )}
+                    />
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {pipelineStatus[process.id] || 'Pending'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="p-4 border-t border-gray-200">
+        <button
+          onClick={onRun}
+          disabled={selectedSteps.size === 0}
+          className={clsx(
+            'w-full py-2 px-4 rounded-md text-white font-medium',
+            'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+            selectedSteps.size === 0
+              ? 'bg-gray-300 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700'
+          )}
+        >
+          Run Pipeline
+        </button>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/ProcessInformation.jsx
+================================================
+import React, { useState } from 'react';
+import { clsx } from 'clsx';
+import { processes } from '../data/processes';
+import FileUpload from './FileUpload';
+import PromptEditor from './PromptEditor';
+
+export default function ProcessInformation({ 
+  selectedProcesses, 
+  onAddProcess, 
+  onRemoveProcess,
+  processFiles,
+  onFileUpload,
+  processPrompts,
+  onPromptUpdate
+}) {
+  const [editingPrompt, setEditingPrompt] = useState(null);
+  const [tempPrompt, setTempPrompt] = useState('');
+
+  const handleEditPrompt = (processId, currentPrompt) => {
+    setEditingPrompt(processId);
+    setTempPrompt(currentPrompt);
+  };
+
+  const handleSavePrompt = (processId) => {
+    onPromptUpdate(processId, tempPrompt);
+    setEditingPrompt(null);
+  };
+
+  const handleUsePreviousOutput = (processId) => {
+    const processIndex = selectedProcesses.indexOf(processId);
+    if (processIndex > 0) {
+      const previousProcessId = selectedProcesses[processIndex - 1];
+      onFileUpload(processId, {
+        type: 'Previous Process Output',
+        sourceProcess: previousProcessId
+      });
+    }
+  };
+
+  return (
+    <section id="process-info" className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Process Information</h2>
+      <div className="space-y-6">
+        {processes.map((process) => (
+          <div
+            key={process.id}
+            className={clsx(
+              'rounded-lg border p-4',
+              selectedProcesses.includes(process.id)
+                ? 'border-indigo-500 bg-indigo-50'
+                : 'border-gray-200'
+            )}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">{process.name}</h3>
+              <button
+                onClick={() => selectedProcesses.includes(process.id) 
+                  ? onRemoveProcess(process.id)
+                  : onAddProcess(process.id)
+                }
+                disabled={selectedProcesses.length >= 12 && !selectedProcesses.includes(process.id)}
+                className={clsx(
+                  'px-3 py-1 rounded-md text-sm font-medium',
+                  selectedProcesses.includes(process.id)
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : selectedProcesses.length >= 12
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                )}
+              >
+                {selectedProcesses.includes(process.id) ? 'Remove' : 'Add'}
+              </button>
+            </div>
+
+            {/* Process Information */}
+            <div className="mb-4 space-y-3">
+              <div>
+                <h4 className="text-sm font-semibold text-gray-700">Description:</h4>
+                <ul className="list-disc pl-4 text-sm text-gray-600">
+                  {process.details.map((detail, index) => (
+                    <li key={index}>{detail}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-700">Required Inputs:</h4>
+                <ul className="list-disc pl-4 text-sm text-gray-600">
+                  {process.inputs.map((input, index) => (
+                    <li key={index}>{input}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-700">Output:</h4>
+                <p className="text-sm text-gray-600">{process.output}</p>
+              </div>
+            </div>
+
+            {selectedProcesses.includes(process.id) && (
+              <div className="space-y-4 border-t pt-4">
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">Process Configuration</h4>
+                  
+                  {/* File Upload Section */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-sm font-medium text-gray-600">Files</h5>
+                      {process.id !== 'code-review' && selectedProcesses.indexOf(process.id) > 0 && (
+                        <button
+                          onClick={() => handleUsePreviousOutput(process.id)}
+                          className="text-sm text-blue-600 hover:text-blue-800"
+                        >
+                          Use Previous Process Output
+                        </button>
+                      )}
+                    </div>
+                    <FileUpload
+                      processId={process.id}
+                      onFilesSelected={onFileUpload}
+                      existingFiles={processFiles[process.id]}
+                      allowMultiple={true}
+                    />
+                  </div>
+
+                  {/* Prompt Editor Section */}
+                  <div className="mb-4">
+                    <h5 className="text-sm font-medium text-gray-600 mb-2">AI Prompt</h5>
+                    {editingPrompt === process.id ? (
+                      <div className="space-y-2">
+                        <PromptEditor
+                          value={tempPrompt}
+                          onChange={setTempPrompt}
+                          placeholder={`Customize prompt for ${process.name}...`}
+                        />
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleSavePrompt(process.id)}
+                            className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingPrompt(null)}
+                            className="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600">
+                          {processPrompts[process.id] || process.defaultPrompt}
+                        </p>
+                        <button
+                          onClick={() => handleEditPrompt(process.id, processPrompts[process.id] || process.defaultPrompt)}
+                          className="text-sm text-blue-600 hover:text-blue-800"
+                        >
+                          Edit Prompt
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+================================================
+File: frontend/src/components/ProcessList.jsx
+================================================
+import React, { useState } from 'react';
+import { clsx } from 'clsx';
+import FileUpload from './FileUpload';
+import PromptEditor from './PromptEditor';
+
+export default function ProcessList({
+  processes,
+  selectedProcesses,
+  onProcessSelect,
+  processFiles,
+  onFileUpload,
+  processPrompts,
+  onPromptUpdate,
+  pipelineStatus,
+  onRun
+}) {
+  const [editingPrompt, setEditingPrompt] = useState(null);
+  const [tempPrompt, setTempPrompt] = useState('');
+
+  const handleEditPrompt = (processId) => {
+    setEditingPrompt(processId);
+    setTempPrompt(processPrompts[processId] || '');
+  };
+
+  const handleSavePrompt = (processId) => {
+    onPromptUpdate(processId, tempPrompt);
+    setEditingPrompt(null);
+  };
+
+  return (
+    <div className="w-2/3 bg-white border-r border-gray-200 overflow-auto p-6">
+      <div className="space-y-8">
+        {processes.map((process) => (
+          <div
+            key={process.id}
+            className={clsx(
+              'border rounded-lg p-6',
+              selectedProcesses.has(process.id) ? 'border-indigo-500' : 'border-gray-200'
+            )}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-4">
+                <input
+                  type="checkbox"
+                  checked={selectedProcesses.has(process.id)}
+                  onChange={() => onProcessSelect(process.id)}
+                  className="h-5 w-5 text-indigo-600 rounded"
+                />
+                <h2 className="text-xl font-semibold">{process.name}</h2>
+              </div>
+              <div className="text-sm text-gray-500">
+                {pipelineStatus[process.id] || 'Pending'}
+              </div>
+            </div>
+
+            {/* Description Section */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-3">Description</h3>
+              <div className="space-y-2 text-gray-600">
+                {process.details.map((detail, index) => (
+                  <p key={index}>{detail}</p>
+                ))}
+              </div>
+              
+              <div className="mt-4">
+                <h4 className="text-md font-medium mb-2">Required Inputs</h4>
+                <ul className="list-disc pl-5 space-y-1 text-gray-600">
+                  {process.inputs.map((input, index) => (
+                    <li key={index}>{input}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Process Configuration Section */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">Process Configuration</h3>
+              
+              {/* Files Subsection */}
+              <div className="mb-6">
+                <h4 className="text-md font-medium mb-3">Files</h4>
+                <FileUpload
+                  processId={process.id}
+                  onFilesSelected={onFileUpload}
+                  existingFiles={processFiles[process.id]}
+                  allowMultiple={true}
+                />
+              </div>
+
+              {/* Prompt Subsection */}
+              <div>
+                <h4 className="text-md font-medium mb-3">Prompt</h4>
+                {editingPrompt === process.id ? (
+                  <div className="space-y-3">
+                    <PromptEditor
+                      value={tempPrompt}
+                      onChange={setTempPrompt}
+                      placeholder={`Customize prompt for ${process.name}...`}
+                    />
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleSavePrompt(process.id)}
+                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingPrompt(null)}
+                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-gray-600">
+                      {processPrompts[process.id] || process.defaultPrompt || 'No prompt set'}
+                    </p>
+                    <button
+                      onClick={() => handleEditPrompt(process.id)}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="sticky bottom-0 bg-white pt-4 mt-6 border-t">
+        <button
+          onClick={onRun}
+          disabled={selectedProcesses.size === 0}
+          className={clsx(
+            'w-full py-3 px-4 rounded-md text-white font-medium',
+            selectedProcesses.size === 0
+              ? 'bg-gray-300 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700'
+          )}
+        >
+          {selectedProcesses.size > 1 ? 'Run Pipeline' : 'Run Selected Process'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/ProcessPanel.jsx
+================================================
+import React from 'react';
+import { clsx } from 'clsx';
+import FileUpload from './FileUpload';
+import PromptEditor from './PromptEditor';
+
+const tabs = [
+  { id: 'description', name: 'Description' },
+  { id: 'inputs', name: 'Required Inputs' },
+  { id: 'configuration', name: 'Process Configuration' },
+  { id: 'files', name: 'Files' },
+  { id: 'prompt', name: 'Prompt' }
+];
+
+export default function ProcessPanel({
+  process,
+  files,
+  prompt,
+  activeTab,
+  onTabChange,
+  onFileUpload,
+  onPromptUpdate,
+  onRun
+}) {
+  return (
+    <div className="w-1/2 bg-white border-r border-gray-200 flex flex-col">
+      <div className="border-b border-gray-200">
+        <div className="flex space-x-4 px-4">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={clsx(
+                'py-4 px-2 text-sm font-medium border-b-2',
+                activeTab === tab.id
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              )}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 p-6 overflow-auto">
+        {activeTab === 'description' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Process Overview</h3>
+            <ul className="list-disc pl-5 space-y-2 text-gray-600">
+              {process.details.map((detail, index) => (
+                <li key={index}>{detail}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {activeTab === 'inputs' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Required Inputs</h3>
+            <ul className="list-disc pl-5 space-y-2 text-gray-600">
+              {process.inputs.map((input, index) => (
+                <li key={index}>{input}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {activeTab === 'configuration' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Process Configuration</h3>
+            <p className="text-gray-600">Configure settings for {process.name}</p>
+            {/* Add configuration options specific to the process */}
+          </div>
+        )}
+
+        {activeTab === 'files' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">File Management</h3>
+            <FileUpload
+              processId={process.id}
+              onFilesSelected={onFileUpload}
+              existingFiles={files}
+              allowMultiple={true}
+            />
+          </div>
+        )}
+
+        {activeTab === 'prompt' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Process Prompt</h3>
+            <PromptEditor
+              value={prompt || ''}
+              onChange={(value) => onPromptUpdate(process.id, value)}
+              placeholder={`Enter instructions for ${process.name}...`}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="p-4 border-t border-gray-200">
+        <button
+          onClick={onRun}
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Run Process
+        </button>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/ProcessSelector.jsx
+================================================
+import React from 'react';
+import FileUpload from './FileUpload';
+
+export default function ProcessSelector({ onFileUpload, onStart }) {
+  return (
+    <section id="process-select" className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Process Configuration</h2>
+      <div className="space-y-6">
+        <FileUpload onFilesSelected={onFileUpload} />
+        
+        <button
+          onClick={onStart}
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Start Pipeline
+        </button>
+      </div>
+    </section>
+  );
+}
+
+================================================
+File: frontend/src/components/ProcessTable.jsx
+================================================
+import React from 'react';
+import { processes } from '../data/processes';
+
+export default function ProcessTable() {
+  // Split processes into two columns of 6 rows each
+  const firstColumn = processes.slice(0, 6);
+  const secondColumn = processes.slice(6, 12);
+
+  return (
+    <section className="bg-white rounded-lg shadow-md p-6 mb-8" id="info">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Process Information</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* First Column */}
+        <div>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Process
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Details
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {firstColumn.map((process, idx) => (
+                <tr key={process.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {process.name}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-500">
+                    <ul className="list-disc pl-4 space-y-1">
+                      {process.details.map((detail, index) => (
+                        <li key={index}>{detail}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Second Column */}
+        <div>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Process
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Details
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {secondColumn.map((process, idx) => (
+                <tr key={process.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {process.name}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-500">
+                    <ul className="list-disc pl-4 space-y-1">
+                      {process.details.map((detail, index) => (
+                        <li key={index}>{detail}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+================================================
+File: frontend/src/components/PromptEditor.jsx
+================================================
+import React from 'react';
+
+export default function PromptEditor({ value, onChange, placeholder, className }) {
+  return (
+    <div className={className}>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Customize ISTQB-Aligned Prompt
+      </label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={6}
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 resize-none font-mono text-sm"
+      />
+      <p className="mt-2 text-sm text-gray-500">
+        Modify the prompt while maintaining ISTQB compliance and best practices
+      </p>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/Section.jsx
+================================================
+import React from 'react';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import FileUpload from './FileUpload';
+import PromptEditor from './PromptEditor';
+import OutputDisplay from './OutputDisplay';
+import { generateSTLCOutput } from '../services/openai';
+
+export default function Section({ title, content, deliverables, isExpanded, onToggle, defaultPrompt, id }) {
+  const [files, setFiles] = React.useState([]);
+  const [prompt, setPrompt] = React.useState(defaultPrompt);
+  const [output, setOutput] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleExecute = async () => {
+    setIsLoading(true);
+    try {
+      let result;
+      if (id === 'closure') {
+        result = `# Test Cycle Closure Metrics
+
+## Test Execution Summary
+- Total Test Cases: 150
+- Passed: 135 (90%)
+- Failed: 12 (8%)
+- Blocked: 3 (2%)
+
+## Defect Metrics
+- Total Defects: 25
+- Critical: 2
+- High: 8
+- Medium: 10
+- Low: 5
+
+## Test Coverage
+- Requirements Coverage: 95%
+- Code Coverage: 87%
+- Risk Coverage: 92%
+
+## Recommendations
+1. Address remaining critical defects before release
+2. Schedule regression testing for fixed issues
+3. Update test documentation with lessons learned
+4. Archive test artifacts for future reference
+
+## Next Steps
+- Schedule defect review meeting
+- Prepare final test closure report
+- Update test strategy based on lessons learned`;
+      } else {
+        result = await generateSTLCOutput(id, prompt, files);
+      }
+      setOutput(result);
+    } catch (error) {
+      setOutput('Error: Failed to generate output. Please try again.');
+    }
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="mb-4 border rounded-lg shadow-sm">
+      <button
+        className="w-full px-4 py-3 flex justify-between items-center bg-gray-50 hover:bg-gray-100 rounded-lg"
+        onClick={onToggle}
+      >
+        <h2 className="text-lg font-semibold">{title}</h2>
+        {isExpanded ? (
+          <ChevronUpIcon className="h-5 w-5" />
+        ) : (
+          <ChevronDownIcon className="h-5 w-5" />
+        )}
+      </button>
+      {isExpanded && (
+        <div className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 className="font-semibold mb-2">Overview</h3>
+              <ul className="list-disc pl-5 mb-4">
+                {content.map((item, index) => (
+                  <li key={index} className="mb-2">{item}</li>
+                ))}
+              </ul>
+              <div className="bg-blue-50 p-3 rounded-md mb-4">
+                <p className="text-blue-700">📝 Deliverables: {deliverables}</p>
+              </div>
+            </div>
+            <div>
+              <FileUpload onFilesSelected={setFiles} />
+              <PromptEditor
+                value={prompt}
+                onChange={setPrompt}
+                className="mb-4"
+              />
+              <button
+                onClick={handleExecute}
+                disabled={isLoading}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300"
+              >
+                {isLoading ? 'Processing...' : 'Execute'}
+              </button>
+              <OutputDisplay output={output} className="mt-4" />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/Sidebar.jsx
+================================================
+import React from 'react';
+
+export default function Sidebar() {
+  return (
+    <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+      <h2 className="text-xl font-bold mb-4">STLC Overview</h2>
+      <p className="mb-4">
+        The Software Testing Life Cycle (STLC) is a systematic approach to testing software.
+      </p>
+      
+      <h3 className="font-semibold mb-2">Key Benefits</h3>
+      <ul className="list-disc pl-5 mb-4">
+        <li>Organized testing process</li>
+        <li>Better test coverage</li>
+        <li>Early defect detection</li>
+        <li>Improved quality assurance</li>
+        <li>Clear documentation</li>
+      </ul>
+
+      <h3 className="font-semibold mb-2">Testing Types</h3>
+      <ul className="list-disc pl-5">
+        <li>Functional Testing</li>
+        <li>Integration Testing</li>
+        <li>System Testing</li>
+        <li>Acceptance Testing</li>
+        <li>Performance Testing</li>
+        <li>Security Testing</li>
+      </ul>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/components/StatusSection.jsx
+================================================
+import React from 'react';
+
+export default function StatusSection({ status }) {
+  return (
+    <section id="process-status" className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Process Status</h2>
+      <div className="space-y-6">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-gray-700">{status.message}</p>
+        </div>
+        
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm font-medium">
+            <span>Progress</span>
+            <span>{status.progress}%</span>
+          </div>
+          <div className="overflow-hidden h-2 rounded-full bg-gray-200">
+            <div
+              className="h-full bg-indigo-600 transition-all duration-500"
+              style={{ width: `${status.progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+================================================
+File: frontend/src/components/TabPanel.jsx
+================================================
+import React, { useState } from 'react';
+import { clsx } from 'clsx';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import FileUpload from './FileUpload';
+import PromptEditor from './PromptEditor';
+import OutputPanel from './OutputPanel';
+
+export default function TabPanel({
+  processes,
+  activeTab,
+  setActiveTab,
+  selectedProcesses,
+  onProcessSelect,
+  processFiles,
+  onFileUpload,
+  processPrompts,
+  onPromptUpdate,
+  pipelineStatus,
+  onRun,
+  validationError,
+  output
+}) {
+  const [editingPrompt, setEditingPrompt] = useState(null);
+  const [tempPrompt, setTempPrompt] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
+  const [activeSection, setActiveSection] = useState('description');
+
+  const handleProcessToggle = (processId) => {
+    onProcessSelect(processId);
+    setActiveTab(processId);
+  };
+
+  const handleEditPrompt = (processId) => {
+    setEditingPrompt(processId);
+    setTempPrompt(processPrompts[processId] || '');
+  };
+
+  const handleSavePrompt = (processId) => {
+    onPromptUpdate(processId, tempPrompt);
+    setEditingPrompt(null);
+  };
+
+  const tabs = [
+    { id: 'pipeline', name: 'Pipeline' },
+    ...processes.map(process => ({
+      id: process.id,
+      name: process.name
+    }))
+  ];
+
+  const sections = [
+    { id: 'description', name: 'Description' },
+    { id: 'inputs', name: 'Required Inputs' },
+    { id: 'configuration', name: 'Process Configuration' },
+    { id: 'files', name: 'Files' },
+    { id: 'prompt', name: 'Prompt' }
+  ];
+
+  const renderHelpContent = () => (
+    <ul className="list-disc pl-5 text-blue-700 space-y-1">
+      {activeTab === 'pipeline' ? (
+        <>
+          <li>Select processes using the checkboxes above</li>
+          <li>Processes will execute in the order shown</li>
+          <li>Ensure all required inputs are provided</li>
+          <li>Click "Start Pipeline" when ready</li>
+        </>
+      ) : (
+        <>
+          <li>Navigate through sections using the tabs above</li>
+          <li>Complete each section before running the process</li>
+          <li>Required fields are marked with an asterisk (*)</li>
+          <li>Click "Run Process" when ready</li>
+        </>
+      )}
+    </ul>
+  );
+
+  return (
+    <div className="flex flex-col h-full w-full">
+      {/* Tabs Navigation */}
+      <div className="bg-white border-b border-gray-200 flex-shrink-0">
+        <div className="flex space-x-1 overflow-x-auto px-4">
+          {tabs.map((tab) => (
+            <div
+              key={tab.id}
+              className={clsx(
+                'relative group',
+                activeTab === tab.id && 'bg-indigo-50 rounded-t-lg'
+              )}
+            >
+              <div className="flex items-center px-3 py-2">
+                {tab.id !== 'pipeline' && (
+                  <input
+                    type="checkbox"
+                    checked={selectedProcesses.has(tab.id)}
+                    onChange={() => handleProcessToggle(tab.id)}
+                    className="h-4 w-4 text-indigo-600 rounded mr-2"
+                  />
+                )}
+                <button
+                  onClick={() => setActiveTab(tab.id)}
+                  className={clsx(
+                    'text-sm font-medium whitespace-nowrap transition-colors',
+                    activeTab === tab.id
+                      ? 'text-indigo-700'
+                      : 'text-gray-500 hover:text-gray-700'
+                  )}
+                >
+                  {tab.name}
+                </button>
+              </div>
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-500" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Panel */}
+        <div className="w-1/2 flex flex-col min-h-0 border-r border-gray-200">
+          {/* Header */}
+          <div className="flex-none h-16 px-6 flex items-center justify-between border-b border-gray-200 bg-white">
+            <h2 className="text-xl font-bold text-gray-900">
+              {activeTab === 'pipeline' ? 'Pipeline Configuration' : processes.find(p => p.id === activeTab)?.name}
+            </h2>
+            <button
+              onClick={() => setShowHelp(!showHelp)}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+              title="Show Help"
+            >
+              <QuestionMarkCircleIcon className="h-6 w-6" />
+            </button>
+          </div>
+
+          {/* Section Tabs */}
+          {activeTab !== 'pipeline' && (
+            <div className="flex-none border-b border-gray-200 bg-white">
+              <div className="px-6 py-2 flex flex-wrap gap-1">
+                {sections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={clsx(
+                      'px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                      activeSection === section.id
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                    )}
+                  >
+                    {section.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {showHelp && (
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <h3 className="font-medium text-blue-800 mb-2">
+                  {activeTab === 'pipeline' ? 'Pipeline Guide' : 'Process Guide'}
+                </h3>
+                {renderHelpContent()}
+              </div>
+            )}
+
+            {activeTab === 'pipeline' ? (
+              <div className="space-y-4">
+                {processes
+                  .filter(p => selectedProcesses.has(p.id))
+                  .map((process, index) => (
+                    <div key={process.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-gray-500">{index + 1}.</span>
+                          <h3 className="font-medium">{process.name}</h3>
+                        </div>
+                        <span className={clsx(
+                          'text-sm px-2 py-1 rounded-full',
+                          pipelineStatus[process.id] === 'completed' ? 'bg-green-100 text-green-800' :
+                          pipelineStatus[process.id] === 'running' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        )}>
+                          {pipelineStatus[process.id] || 'Pending'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                {validationError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+                    <h4 className="text-red-700 font-medium mb-2">Missing Required Inputs:</h4>
+                    <pre className="text-red-600 text-sm whitespace-pre-wrap">{validationError}</pre>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {processes
+                  .filter(process => process.id === activeTab)
+                  .map(process => {
+                    const sectionContent = {
+                      description: (
+                        <div key="description" className="bg-gray-50 rounded-lg p-4">
+                          <div className="space-y-2 text-gray-600">
+                            {process.details.map((detail, index) => (
+                              <p key={`detail-${index}`}>{detail}</p>
+                            ))}
+                          </div>
+                        </div>
+                      ),
+                      inputs: (
+                        <div key="inputs" className="bg-gray-50 rounded-lg p-4">
+                          <ul className="list-disc pl-5 space-y-1 text-gray-600">
+                            {process.inputs.map((input, index) => (
+                              <li key={`input-${index}`}>{input}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ),
+                      configuration: (
+                        <div key="configuration" className="bg-gray-50 rounded-lg p-4">
+                          <p className="text-gray-600">Configure settings for {process.name}</p>
+                        </div>
+                      ),
+                      files: (
+                        <FileUpload
+                          key="files"
+                          processId={process.id}
+                          onFilesSelected={onFileUpload}
+                          existingFiles={processFiles[process.id]}
+                          allowMultiple={true}
+                        />
+                      ),
+                      prompt: (
+                        <div key="prompt">
+                          {editingPrompt === process.id ? (
+                            <div className="space-y-3">
+                              <PromptEditor
+                                value={tempPrompt}
+                                onChange={setTempPrompt}
+                                placeholder={`Customize prompt for ${process.name}...`}
+                              />
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => handleSavePrompt(process.id)}
+                                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => setEditingPrompt(null)}
+                                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              <div className="bg-gray-50 rounded-lg p-4">
+                                <p className="text-gray-600">
+                                  {processPrompts[process.id] || process.defaultPrompt || 'No prompt set'}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => handleEditPrompt(process.id)}
+                                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    };
+
+                    return sectionContent[activeSection];
+                  })}
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex-none h-16 px-6 flex items-center border-t border-gray-200 bg-white">
+            <button
+              onClick={onRun}
+              disabled={activeTab === 'pipeline' && selectedProcesses.size === 0}
+              className={clsx(
+                "w-full py-2 px-4 rounded-md text-white transition-colors shadow-sm",
+                activeTab !== 'pipeline'
+                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  : selectedProcesses.size === 0
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+              )}
+            >
+              {activeTab === 'pipeline' ? 'Start Pipeline' : 'Run Process'}
+            </button>
+          </div>
+        </div>
+
+        {/* Right Panel */}
+        <div className="w-1/2 flex flex-col min-h-0">
+          <OutputPanel output={output} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================
+File: frontend/src/data/processes.js
+================================================
+export const processes = [
+  {
+    id: 'code-review',
+    name: 'Code Review',
+    details: [
+      'Analyze code quality and identify potential vulnerabilities',
+      'Ensure code adheres to industry standards and best practices',
+      'Prepare the code for testing by eliminating bugs and inefficiencies'
+    ],
+    inputs: ['Source Code', 'Technical Design Document'],
+    output: 'Code Review Report'
+  },
+  {
+    id: 'requirement-analysis',
+    name: 'Requirement Analysis',
+    details: [
+      'Review and analyze project requirements and specifications',
+      'Identify testable requirements and acceptance criteria',
+      'Create requirement traceability matrix'
+    ],
+    inputs: ['Requirement Document', 'Technical Design Document'],
+    output: 'Requirements Analysis Report'
+  },
+  {
+    id: 'test-planning',
+    name: 'Test Planning',
+    details: [
+      'Develop comprehensive test strategy and plan',
+      'Define test objectives, scope, and approach',
+      'Estimate resources and create test schedule'
+    ],
+    inputs: ['Requirements Analysis Report', 'Code Review Report'],
+    output: 'Test Plan'
+  },
+  {
+    id: 'test-scenario-generation',
+    name: 'Test Scenario Generation',
+    details: [
+      'Create high-level test scenarios based on requirements',
+      'Cover all possible user workflows and business cases',
+      'Ensure comprehensive testing coverage'
+    ],
+    inputs: ['Requirements Analysis Report', 'Test Plan'],
+    output: 'Test Scenarios'
+  },
+  {
+    id: 'test-scenario-optimization',
+    name: 'Test Scenario Optimization',
+    details: [
+      'Analyze and optimize test scenarios for efficiency',
+      'Remove redundant scenarios and identify gaps',
+      'Prioritize scenarios based on risk and importance'
+    ],
+    inputs: ['Test Scenarios'],
+    output: 'Optimized Test Scenarios'
+  },
+  {
+    id: 'test-case-generation',
+    name: 'Test Case Generation',
+    details: [
+      'Develop detailed test cases based on optimized scenarios',
+      'Ensure test cases align with user requirements',
+      'Validate test cases for completeness and accuracy'
+    ],
+    inputs: ['Optimized Test Scenarios', 'Requirements Analysis Report'],
+    output: 'Test Cases'
+  },
+  {
+    id: 'test-case-optimization',
+    name: 'Test Case Optimization',
+    details: [
+      'Review and optimize test cases for maximum coverage',
+      'Eliminate duplicate test cases and redundancies',
+      'Ensure test case effectiveness and efficiency'
+    ],
+    inputs: ['Test Cases'],
+    output: 'Optimized Test Cases'
+  },
+  {
+    id: 'test-code-generation',
+    name: 'Test Code Generation',
+    details: [
+      'Create automated test scripts based on test cases',
+      'Implement test framework and utilities',
+      'Ensure code quality and maintainability'
+    ],
+    inputs: ['Optimized Test Cases', 'Source Code'],
+    output: 'Test Scripts'
+  },
+  {
+    id: 'environment-setup',
+    name: 'Environment Setup',
+    details: [
+      'Configure test environment and tools',
+      'Set up test data and dependencies',
+      'Validate environment readiness'
+    ],
+    inputs: ['Test Scripts', 'Technical Design Document'],
+    output: 'Environment Setup Report'
+  },
+  {
+    id: 'test-execution',
+    name: 'Test Execution',
+    details: [
+      'Execute test cases and record results',
+      'Track defects and issues',
+      'Monitor test progress and coverage'
+    ],
+    inputs: ['Test Scripts', 'Environment Setup Report', 'Optimized Test Cases'],
+    output: 'Test Execution Results'
+  },
+  {
+    id: 'test-reporting',
+    name: 'Test Reporting',
+    details: [
+      'Generate detailed test execution reports',
+      'Analyze test results and metrics',
+      'Provide recommendations and insights'
+    ],
+    inputs: ['Test Execution Results'],
+    output: 'Test Report'
+  },
+  {
+    id: 'test-closure',
+    name: 'Test Closure',
+    details: [
+      'Verify all testing activities are completed',
+      'Archive test artifacts and documentation',
+      'Conduct lessons learned and process improvement'
+    ],
+    inputs: ['Test Report', 'Test Execution Results'],
+    output: 'Test Closure Report'
+  }
+];
+
+================================================
+File: frontend/src/data/sections.js
+================================================
+export const sections = [
+  {
+    id: 'requirement',
+    title: '1. Requirement Analysis',
+    content: [
+      'Review requirements, specifications, and documentation',
+      'Identify types of testing needed',
+      'Analyze testing requirements',
+      'Prepare Requirement Traceability Matrix (RTM)',
+    ],
+    deliverables: 'RTM, Automation Feasibility Report',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst. Analyze the provided source code to identify functional and non-functional requirements. Extract explicit functionalities implemented in the code and infer implicit requirements based on its logic. Highlight any gaps, ambiguities, or missing requirements that may affect completeness or quality. Assess the code for alignment with standard testing principles, including maintainability, performance, and security. Provide a clear and structured requirements document outlining the purpose, key functionalities, non-functional characteristics, and areas needing improvement, along with actionable recommendations to ensure compliance with best practices in software testing.',
+  },
+  {
+    id: 'planning',
+    title: '2. Test Planning',
+    content: [
+      'Prepare test strategy and plan',
+      'Estimate effort and cost',
+      'Determine resources and schedule',
+      'Plan test environment setup',
+    ],
+    deliverables: 'Test Plan, Test Strategy',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst and create a detailed Test Plan for the provided project. Outline the testing objectives, scope, and strategy, including the levels and types of testing to be performed. Specify the required test environment, identify potential risks with mitigation strategies, and define roles and responsibilities for all stakeholders. Include a high-level schedule with milestones and deliverables, ensuring the plan aligns with ISTQB guidelines and industry best practices for effective and efficient testing execution.',
+  },
+  {
+    id: 'development',
+    title: '3. Test Case Development',
+    content: [
+      'Create test cases and scripts',
+      'Review and baseline test cases',
+      'Create test data',
+      'Update RTM with test cases',
+    ],
+    deliverables: 'Test Cases, Test Scripts, Test Data',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst and develop detailed test cases based on the provided requirements and source code. For each test case, include the following details: test case ID, objective, preconditions, steps to execute, expected results, and postconditions. Ensure the test cases cover both positive and negative scenarios, address edge cases, and align with functional and non-functional requirements. Provide traceability by mapping test cases to corresponding requirements, ensuring comprehensive coverage. Maintain clarity, precision, and adherence to ISTQB guidelines for effective test case design.',
+  },
+  {
+    id: 'environment',
+    title: '4. Test Environment Setup',
+    content: [
+      'Prepare hardware and software requirements',
+      'Setup test environment and test data',
+      'Perform smoke test on the build',
+      'Configure test tools and frameworks',
+    ],
+    deliverables: 'Test Environment, Smoke Test Results',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst and outline a comprehensive plan for the Test Environment Setup phase. Analyze the provided requirements and source code to identify the hardware, software, network, and configurations needed for the test environment. Include steps to set up the environment, such as installing necessary tools, configuring test data, and validating dependencies. Ensure the environment supports the execution of all planned test cases, including functional, performance, and security tests. Highlight any potential risks and dependencies, and provide guidelines for maintaining and validating the environment throughout the testing process, adhering to ISTQB best practices.',
+  },
+  {
+    id: 'execution',
+    title: '5. Test Execution',
+    content: [
+      'Execute test cases',
+      'Document test results',
+      'Report and track defects',
+      'Retest fixed defects',
+    ],
+    deliverables: 'Test Results, Defect Reports',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst and execute the test cases in the planned test environment. Log all test results, including passed and failed cases, with detailed observations and evidence such as screenshots or logs. Identify and report defects, ensuring they are categorized and prioritized effectively. Validate the fixes for defects during retesting and ensure they meet the acceptance criteria. Continuously monitor and document progress to ensure alignment with the test plan and project goals.',
+  },
+  {
+    id: 'closure',
+    title: '6. Test Cycle Closure',
+    content: [
+      'Evaluate cycle completion criteria',
+      'Prepare test metrics and reports',
+      'Document lessons learned',
+      'Archive test artifacts',
+    ],
+    deliverables: 'Test Metrics, Test Closure Report',
+    defaultPrompt: 'Act as an ISTQB-certified test analyst and perform the Test Cycle Closure activities. Review and document the test summary report, including metrics such as test coverage, defect density, and unresolved issues. Conduct a retrospective to identify lessons learned and areas for improvement. Archive test artifacts, including test cases, results, and logs, for future reference. Ensure all testing objectives have been met and communicate the closure status to stakeholders in alignment with ISTQB best practices.',
+  },
+];
+
+================================================
+File: frontend/src/services/openai.js
+================================================
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true
+});
+
+export async function generateSTLCOutput(phase, prompt, files) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert STLC analyst focusing on the ${phase} phase. Analyze the provided information and generate detailed, actionable outputs.`
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 1000
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error('OpenAI API Error:', error);
+    throw new Error('Failed to generate STLC output');
+  }
+}
+
