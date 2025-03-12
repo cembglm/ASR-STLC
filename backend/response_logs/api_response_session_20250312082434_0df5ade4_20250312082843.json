@@ -1,0 +1,24 @@
+{
+  "id": "chatcmpl-qrvbw2o0kfq0oi8tk7grok",
+  "object": "chat.completion",
+  "created": 1741767874,
+  "model": "llama-3.2-1b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "length",
+      "message": {
+        "role": "assistant",
+        "content": " MDA?\n\n[ ]])\n\n[ ].\n\n[ ]], [M]]\n\n[ ].\n\n[ ].\n\n[ ]].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n( L )]].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ]], [M]?\n\n[ M ]?].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ]]].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ]].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ]], [A]?\n\n[ A]? [M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ M?].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A]**[A]**[M]**[M]? [M]**[M]? [M]?\n\n[ M?].\n\n[ M?].\n\n[ A]. [A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]**[A]? [M]?\n\n[ M ].\n\n[ A ].\n\n[ A].\n\n[ A]. [A] [A].\n\n[ A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A], [A] [M]? [A] [B]. [A] [W]. [F]. [D.]. [C]. [M]. [B]. [A]. [A]. [O]. [L]. [M]. [B]. [A].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [M]?\n\n[ M]. [B].\n\n[ A].\n\n[ A. [D]].\n\n[ A]. [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A], [A] [M]? [B] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A], [A] [M]? [B] [A] [D]. [I]. [F]. [A].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ].\n\n[ A ]\u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ \u00a0[ ][A] [M]\u00a0[APAD[UDL[]]\\[[M]\\[A\\[/\\,[[A][][]\\([A]\\[M\\]? [B][A]\\[M\\],[A] [D] [W] [M] [A] [A] [A] [A] [A] [APAD[ ][A] [M]\u00a0[AP?[]. [M]\u00a0[AP?[],[AP][A][AP?[],[AP]? [B][A] [M]?,[A] [M] [A] [A] [AP] [AP? [M] [A] [AP? [AP] [M] [A] [AP] [A] [A] [AP] [AP[] [AP?[],[AP][A]? [B] [A] [M]?,[A] [M] [A] [AP] [A] [AP[ ][A] [A] [A] [A] [AP] [M] [A] [A] [AP[],[A] [M] [A] [A] [AP[] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [A] [M] [A] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [A] [A] [A] [A] [M] [A] [A] [A] [A] [A] [A] [A] [AP[] [A] [M] [A] [A] [A] [A] [A] [A] [A] [A] [M] [A] [A] [A] [A] [A] [A] [M] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [A] [A] [A] [A] [M] [A] [A] [A] [A] [A] [A] [A] [M] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [M] [A] [A] [A] [M] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [A] [A] [A] [M] [A] [L] [B] [M] [A] [A] [A] [M] [A] [A] [A] [AP[],[A] [M] [A] [A] [A] [A] [M] [A] [A] [M] [A] [A] [M] [A] [A] [A] [M] [A] [A] [M] [A] [AP[],[A] [M] [A] [A] [A] [AP[] [M] [A] [A] [M] [A] [A] [AP[] [M] [A] [A] [A] [M] [A] [A] [A] [M] [A] [A] [A] [AP[],[A, [M] [A] [A] [M] [A] [A] [A] [M] [A] [A] [A] [M] [A] [A] [M] [A] [A] [M] [A] [A] [AP[],[A, [M] [A] [A] [A] [AP[],[A] [M] [A] [A] [M] [A] [A] [A] [A] [A] [AD[ ][A] [M] [A] [A] [B[] [M] [A] [A] [M] [AP[],[M] [A] [A] [AP[] [L] [B] [D] [W] [M] [F[ ][I] [M] [A] [D] [W] [M] [A] [B] [M] [A] [D] [W] [M] [A] [B] [D] [W] [M] [A] [L] [B] [M] [A] [D] [W] [M] [A] [B] [D] [M] [A] [B] [D] [W] [M] [A] [B] [D] [W] [M] [A] [L] [B] [M] [A] [D] [W] [M]"
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1669,
+    "completion_tokens": 2047,
+    "total_tokens": 3716
+  },
+  "stats": {},
+  "system_fingerprint": "llama-3.2-1b-instruct"
+}

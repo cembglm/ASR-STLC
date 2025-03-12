@@ -1,8 +1,8 @@
 """ 
 app.py
 ------
-FastAPI uygulamasının ana giriş noktası. Burada FastAPI instance’ı tanımlanır, 
-STLC adımlarına ait router’lar eklenir ve uygulama başlatılır.
+FastAPI uygulamasının ana giriş noktası. Burada FastAPI instance'ı tanımlanır, 
+STLC adımlarına ait router'lar eklenir ve uygulama başlatılır.
 """
 
 import uvicorn
@@ -13,7 +13,10 @@ import os
 import logging
 from io import BytesIO
 from fastapi.responses import JSONResponse
+
+# Import process handlers
 from stlc.code_review import run_step as run_code_review
+from stlc.requirement_analysis import run_step as run_requirement_analysis
 
 # Set up logging
 logger = logging.getLogger("app")
@@ -21,7 +24,8 @@ logging.basicConfig(level=logging.INFO)
 
 # Define process handlers dictionary
 PROCESS_HANDLERS = {
-    'code-review': run_code_review  # Use hyphenated version to match frontend
+    'code-review': run_code_review,
+    'requirement-analysis': run_requirement_analysis
 }
 
 app = FastAPI(
@@ -68,6 +72,36 @@ async def process_code_review(files: List[UploadFile] = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Güncellenmiş endpoint - Requirement Analysis
+@app.post("/api/processes/requirement_analysis/run")
+async def process_requirement_analysis(files: List[UploadFile] = File(...)):
+    logger.info("Requirement Analysis API ile bağlantı kuruldu")
+    
+    try:
+        file_paths = []
+        for file in files:
+            file_path = os.path.join(UPLOAD_DIR, file.filename)
+            with open(file_path, "wb") as buffer:
+                content = await file.read()
+                buffer.write(content)
+            file_paths.append(file_path)
+            logger.info(f"Dosya kaydedildi: {file_path}")
+
+        logger.info("Requirement Analysis işlemi başlatılıyor...")
+        result = await run_requirement_analysis({"files": file_paths})
+
+        # Cleanup temporary files
+        for file_path in file_paths:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+        # run_step'in döndüğü cevabı olduğu gibi dön
+        return result
+
+    except Exception as e:
+        logger.error(f"Requirement Analysis hatası: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+       
 @app.post("/api/processes/{process_type}/run")
 async def run_process(process_type: str, files: List[UploadFile] = File(...)):
     logger.info(f"Received request for process: {process_type}")

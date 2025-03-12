@@ -1,0 +1,24 @@
+{
+  "id": "chatcmpl-iaxndq5n8mhhjhcvh4n0qt",
+  "object": "chat.completion",
+  "created": 1741769038,
+  "model": "llama-3.2-1b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "length",
+      "message": {
+        "role": "assistant",
+        "content": " MDA?\n\n[ ]])\n\n... [M] ]\n\n[ ].\n\n[ ]])\n\n[ ]...\n\n[ ]]\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]...\n\n[ ]].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n[ ].\n\n(ADUD)]].\n\n[/]])\n\n[APM]...]\n\n[APDA?...])\n\n[APDA?])\n\n[APA])...\n\n[APAEW]...\n\n[APAM],..., [APM],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],..., [AP],...\n\n[AP]...\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,]\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP,].\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],.\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP])\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,])\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP,])\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP],\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP,])\n\n[AP,]\n\n[AP],\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP],\n\n[AP,]\n\n[AP],\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,])\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]?\n\n[AP,]\n\n[AP,]\n\n[AP],\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,]\n\n[AP,])\n\n[AP,]\n[AP,]\n[AP,]\n[AP,]\n[AP,]\n[AP,]\u00a0[AP,\u00a0[\u00a0[],\u00a0[ ], [M], [A], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M], [M],, [M], [M],[M],[A],[AP],[A],[M],[M],[M],[M],[M],[M],[M],[M],[M],[M],[M],, [M],[M],, [M],, [M],[M],, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M]?, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, [M],, M, M, [M],, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M,"
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1669,
+    "completion_tokens": 2047,
+    "total_tokens": 3716
+  },
+  "stats": {},
+  "system_fingerprint": "llama-3.2-1b-instruct"
+}
