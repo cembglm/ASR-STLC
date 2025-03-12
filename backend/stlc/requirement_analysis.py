@@ -11,8 +11,6 @@ import certifi
 logger = logging.getLogger("requirement_analysis")
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-os.makedirs("response_logs", exist_ok=True)
-
 MONGO_URI = "mongodb+srv://wicklash77:1234@cluster0.z3ubb.mongodb.net/requirement_analysis_db?retryWrites=true&w=majority&tls=true"
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where(), connectTimeoutMS=30000, socketTimeoutMS=30000)
 db = client["requirement_analysis_db"]
@@ -21,22 +19,6 @@ prompts_collection = db["prompts"]
 
 LM_STUDIO_API_URL = "http://192.168.88.100:1234/v1"
 MODEL_NAME = "llama-3.2-3b-instruct"
-
-def save_api_response(response_data, session_id):
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
-    filename = f"response_logs/api_response_{session_id}_{timestamp}.json"
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(response_data, f, indent=2)
-    logger.info(f"API yanıtı kaydedildi: {filename}")
-    return filename
-
-def save_model_output(model_output, session_id):
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
-    filename = f"response_logs/model_output_{session_id}_{timestamp}.txt"
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(model_output)
-    logger.info(f"Model çıktısı kaydedildi: {filename}")
-    return filename
 
 async def get_prompt(prompt_title):
     query = {"title": prompt_title}
@@ -119,8 +101,6 @@ async def run_step(data):
             logger.error(f"LM Studio API hatası: {str(e)}")
             raise ValueError(f"LM Studio'ya bağlanılamadı: {str(e)}")
 
-        response_file = save_api_response(full_api_response, session_id)
-
         if "choices" in full_api_response and len(full_api_response["choices"]) > 0:
             raw_result = full_api_response["choices"][0]["message"]["content"]
         elif "content" in full_api_response:
@@ -128,8 +108,6 @@ async def run_step(data):
         else:
             logger.error(f"Beklenmeyen yanıt yapısı: {json.dumps(full_api_response, indent=2)}")
             raise ValueError("LM Studio'dan beklenmeyen yanıt yapısı alındı")
-
-        output_file = save_model_output(raw_result, session_id)
 
         analysis_data = {
             "session_id": session_id,
