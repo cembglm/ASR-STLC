@@ -52,6 +52,7 @@ def read_root():
 
 @app.post("/api/processes/code_review/run")
 async def process_code_review(files: List[UploadFile] = File(...)):
+    logger.info("Code-Review API ile bağlantı kuruldu")
     try:
         file_paths = []
         for file in files:

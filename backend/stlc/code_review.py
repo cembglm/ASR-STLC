@@ -4,17 +4,18 @@ import time
 from io import BytesIO
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
-from ollama import chat
+import requests
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-# Remove this line as it causes circular import
-# from stlc.code_review import run_step as run_code_review
 
 app = FastAPI()
 logger = logging.getLogger("code_review")
 logging.basicConfig(level=logging.INFO)
 
-# LLM için token limiti ve chunk ayarları (backend.py ile uyumlu)
+# LM Studio API ayarları
+LM_STUDIO_API_URL = "http://192.168.88.100:1234/v1"
+MODEL_NAME = "llama-3.2-3b-instruct"
+
+# LLM için token limiti ve chunk ayarları
 LLM_TOKEN_LIMIT = 4096
 BASE_CHUNK_SIZE = 1000
 MIN_CHUNK_SIZE = 500
@@ -60,26 +61,29 @@ async def review_chunk(file_name: str, chunk: str, chunk_index: int, total_chunk
         f"Code:\n{chunk}"
     )
     try:
-        response = chat(
-            model="llama3.2",
-            messages=[{"role": "user", "content": prompt}]
+        payload = {
+            "model": MODEL_NAME,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2,
+            "max_tokens": 2048
+        }
+        response = requests.post(
+            f"{LM_STUDIO_API_URL}/chat/completions",
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=30
         )
-        # Beklenen cevap sözlüğün içinde yer alıyor
-        return response['message']['content']
-    except Exception as e:
-        logger.error(f"Error during review API call for {file_name} chunk {chunk_index+1}: {e}")
-        raise HTTPException(status_code=500, detail=f"Error during review API call for {file_name}")
+        response.raise_for_status()
+        result = response.json()
+        return result["choices"][0]["message"]["content"]
+    except requests.RequestException as e:
+        logger.error(f"Error during LM Studio API call for {file_name} chunk {chunk_index+1}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error during LM Studio API call for {file_name}")
 
-@app.post("/api/processes/code_review/run")  # Changed underscore to hyphen
+@app.post("/api/processes/code-review/run")
 async def process_code_review(files: list[UploadFile] = File(...)):
     """
     Birden fazla dosya yüklenebilen kod incelemesi endpoint’i.
-    Her dosya için:
-    - Dosya içeriği UTF-8 olarak okunur,
-    - sanitize edilir,
-    - RecursiveCharacterTextSplitter kullanılarak dinamik olarak parçalara ayrılır,
-    - Her parça için Ollama chat API çağrısı yapılır,
-    - Tüm chunk’lerin sonuçları dosya bazında birleştirilir ve yapılandırılmış olarak döndürülür.
     """
     if not files:
         raise HTTPException(status_code=400, detail="Hiçbir dosya yüklenmedi.")
@@ -147,14 +151,24 @@ async def run_step(data: dict) -> dict:
                     f"Code to review:\n{code_content}"
                 )
 
-                response = chat(
-                    model="llama3.2",
-                    messages=[{"role": "user", "content": prompt}]
+                payload = {
+                    "model": MODEL_NAME,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.2,
+                    "max_tokens": 2048
+                }
+                response = requests.post(
+                    f"{LM_STUDIO_API_URL}/chat/completions",
+                    json=payload,
+                    headers={"Content-Type": "application/json"},
+                    timeout=30
                 )
+                response.raise_for_status()
+                result = response.json()
 
                 review_results.append({
                     "file_name": os.path.basename(file_path),
-                    "review": response['message']['content']
+                    "review": result["choices"][0]["message"]["content"]
                 })
                 
                 logger.info(f"Completed review for: {file_path}")

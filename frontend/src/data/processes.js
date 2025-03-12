@@ -2,7 +2,7 @@ import { PROCESS_TYPES } from '../constants/processTypes';
 
 export const processes = [
   {
-    id: PROCESS_TYPES.CODE_REVIEW,
+    id: 'code-review',
     name: 'Code Review',
     details: [
       'Automated code review using LLM',

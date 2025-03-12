@@ -3,7 +3,6 @@ import Header from './components/Header';
 import TabPanel from './components/TabPanel';
 import { processes } from './data/processes';
 import { processService } from './services/processService';
-import { codeReviewService } from './services/codeReviewService';
 
 export default function App() {
   // Combined states from both App.jsx files
