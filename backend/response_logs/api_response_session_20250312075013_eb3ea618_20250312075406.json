@@ -1,0 +1,24 @@
+{
+  "id": "chatcmpl-4dveaygav6m6wyqmcw41dg",
+  "object": "chat.completion",
+  "created": 1741765822,
+  "model": "llama-3.2-1b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "logprobs": null,
+      "finish_reason": "length",
+      "message": {
+        "role": "assistant",
+        "content": "so, which, we, , all, , the,  M , the, M, the, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA, DA,"
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1669,
+    "completion_tokens": 2047,
+    "total_tokens": 3716
+  },
+  "stats": {},
+  "system_fingerprint": "llama-3.2-1b-instruct"
+}

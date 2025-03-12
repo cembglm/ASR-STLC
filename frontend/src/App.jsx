@@ -26,35 +26,27 @@ export default function App() {
   const handleFileUpload = async (processIdOrFiles, fileTypeOrInfo) => {
     console.log('[App] File upload triggered');
     
-    // Check if it's called with files array (centralized management)
     if (Array.isArray(processIdOrFiles)) {
       try {
         const files = processIdOrFiles;
         const fileType = fileTypeOrInfo;
         console.log(`[App] Centralized file upload with type: ${fileType}`);
         
-        const newFiles = await Promise.all(
-          Array.from(files).map(async file => {
-            const fileData = {
-              id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-              name: file.name,
-              type: fileType || file.type,
-              size: file.size,
-              content: await file.text(),
-              uploadDate: new Date().toISOString()
-            };
-            return fileData;
-          })
-        );
-
+        const newFiles = Array.from(files).map(file => ({
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          name: file.name,
+          type: fileType || file.type,
+          size: file.size,
+          file: file, // Orijinal File nesnesini sakla
+          uploadDate: new Date().toISOString()
+        }));
+  
         setManagedFiles(prev => [...prev, ...newFiles]);
       } catch (error) {
         console.error('File upload error:', error);
         setValidationError('An error occurred while uploading the file');
       }
-    } 
-    // Otherwise it's called with direct process file mapping
-    else {
+    } else {
       const processId = processIdOrFiles;
       const fileInfo = fileTypeOrInfo;
       console.log(`[App] Direct file upload for process ${processId}: ${fileInfo.file.name} (type: ${fileInfo.type})`);
@@ -279,7 +271,6 @@ export default function App() {
       // Determine files to use - support both direct file passing and centralized file management
       let files = filesArg;
       if (!files) {
-        // If no files are directly provided, check if we should use centralized file management
         const relevantFiles = managedFiles.filter(file => 
           fileProcessMappings[file.id]?.includes(processId)
         );
@@ -295,6 +286,14 @@ export default function App() {
       
       console.log(`[App] Processing with ${files.length} files`);
       
+      // Windows pop-up ile kullanılan dosyaları göster
+      if (files.length > 0) {
+        const fileNames = files.map(file => file.name || file.file?.name || 'Unnamed File').join('\n');
+        window.alert(`Processing ${processId} with the following files:\n\n${fileNames}`);
+      } else {
+        window.alert(`Processing ${processId} with no files selected.`);
+      }
+  
       let result;
       if (processId === 'code-review') {
         console.log('[App] Running code review');
@@ -305,7 +304,7 @@ export default function App() {
           ).join('\n'),
           status: 'completed',
           processType: 'Code Review',
-          processId: processId, // processId bilgisini ekliyoruz
+          processId: processId,
           timestamp: new Date().toISOString()
         });
         console.log('[App] Code review completed, output set');
@@ -313,7 +312,6 @@ export default function App() {
         console.log('[App] Running test planning');
         const formData = new FormData();
         files.forEach(fileInfo => {
-          // Handle both centralized and direct file formats
           const file = fileInfo.file || fileInfo;
           formData.append('files', file);
           console.log(`[App] Added file to FormData: ${file.name || fileInfo.name}`);
@@ -338,22 +336,34 @@ export default function App() {
           content: result.error ? `Error: ${result.error}` : result.result,
           status: result.error ? 'error' : 'completed',
           processType: 'Test Planning',
-          processId: processId, // processId bilgisini ekliyoruz
-          timestamp: new Date().toISOString()
-        });
-        console.log('[App] Test planning completed, output set');
-      } else if (processId === 'requirement-analysis') {
-        // Örnek gereksinim analizi çıktısı
-        setOutput({
-          content: `# Requirement Analysis Results\n\n## Functional Requirements\n1. User authentication system\n2. Data storage and retrieval\n3. Real-time notification system\n\n## Non-Functional Requirements\n1. Performance: System should handle 1000 concurrent users\n2. Security: Implement OAuth 2.0 for authentication\n3. Reliability: 99.9% uptime guarantee`,
-          status: 'completed',
-          processType: 'Requirement Analysis',
           processId: processId,
           timestamp: new Date().toISOString()
         });
-        console.log('[App] Requirement analysis completed, output set');
-      } else if (processId === 'environment-setup') {
-        // Örnek ortam kurulumu çıktısı
+        console.log('[App] Test planning completed, output set');
+      }else if (processId === 'requirement-analysis') {
+        console.log('[App] Running requirement analysis');
+        try {
+            const result = await processService.runRequirementAnalysis(files, null);
+            console.log('[App] Backend response from requirement analysis:', result);
+            setOutput({
+                content: result, // raw_result string'i doğrudan content olarak
+                status: 'completed',
+                processType: 'Requirement Analysis',
+                processId: processId,
+                timestamp: new Date().toISOString()
+            });
+            console.log('[App] Requirement analysis completed, output set');
+        } catch (error) {
+            console.error('[App] Error in requirement analysis:', error);
+            setOutput({
+                content: `Hata: ${error.message}`,
+                status: 'error',
+                processType: 'Requirement Analysis',
+                processId: processId,
+                timestamp: new Date().toISOString()
+            });
+        }
+    }else if (processId === 'environment-setup') {
         setOutput({
           content: `# Environment Setup Completed\n\n## Development Environment\n- Node.js v16.14.2\n- React v18.2.0\n- PostgreSQL v14.3\n\n## Test Environment\n- Jest v28.1.0\n- Cypress v10.3.0\n\n## Configuration\n\`\`\`\nAPP_PORT=3000\nDB_CONNECTION=postgresql://user:password@localhost:5432/testdb\nJWT_SECRET=test_secret_key\n\`\`\``,
           status: 'completed',
@@ -363,7 +373,6 @@ export default function App() {
         });
         console.log('[App] Environment setup completed, output set');
       } else if (processId === 'test-scenario-generation') {
-        // Örnek test senaryosu çıktısı
         setOutput({
           content: `# Generated Test Scenarios\n\n## Authentication Tests\n1. TC001: Valid login with correct credentials\n2. TC002: Invalid login with incorrect password\n3. TC003: Password reset functionality\n\n## Data Management Tests\n1. TC004: Create new record\n2. TC005: Update existing record\n3. TC006: Delete record\n\n## Integration Tests\n1. TC007: End-to-end user registration flow\n2. TC008: Complete order processing workflow`,
           status: 'completed',
@@ -373,7 +382,6 @@ export default function App() {
         });
         console.log('[App] Test scenario generation completed, output set');
       } else {
-        // Diğer süreçler için genel bir mesaj
         setOutput({
           content: `# ${processId} Process Output\n\nSuccessfully completed the ${processId} process.\n\n## Details\n- Process ID: ${processId}\n- Timestamp: ${new Date().toISOString()}\n- Files processed: ${files.length}\n\n## Summary\nAll operations completed successfully with no errors.`,
           status: 'completed',
