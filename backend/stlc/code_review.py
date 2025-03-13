@@ -12,7 +12,7 @@ logger = logging.getLogger("code_review")
 logging.basicConfig(level=logging.INFO)
 
 # LM Studio API ayarları
-LM_STUDIO_API_URL = "http://192.168.88.100:1234/v1"
+LM_STUDIO_API_URL = "http://localhost:1234/v1"
 MODEL_NAME = "llama-3.2-3b-instruct"
 
 # LLM için token limiti ve chunk ayarları
@@ -71,7 +71,7 @@ async def review_chunk(file_name: str, chunk: str, chunk_index: int, total_chunk
             f"{LM_STUDIO_API_URL}/chat/completions",
             json=payload,
             headers={"Content-Type": "application/json"},
-            timeout=30
+            timeout=1800
         )
         response.raise_for_status()
         result = response.json()
@@ -161,7 +161,7 @@ async def run_step(data: dict) -> dict:
                     f"{LM_STUDIO_API_URL}/chat/completions",
                     json=payload,
                     headers={"Content-Type": "application/json"},
-                    timeout=30
+                    timeout=1800
                 )
                 response.raise_for_status()
                 result = response.json()

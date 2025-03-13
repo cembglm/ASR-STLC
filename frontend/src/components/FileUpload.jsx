@@ -29,7 +29,8 @@ export default function FileUpload({
       }
       onFileUpload(acceptedFiles, selectedFileType);
     },
-    multiple: true
+    multiple: true,
+    disabled: !selectedFileType
   });
 
   return (
@@ -59,13 +60,19 @@ export default function FileUpload({
         <div
           {...getRootProps()}
           className={clsx(
-            'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
+            'border-2 border-dashed rounded-lg p-6 text-center transition-colors',
+            !selectedFileType ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60' : 'cursor-pointer',
             isDragActive ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-gray-400'
           )}
         >
           <input {...getInputProps()} />
           <p className="text-sm text-gray-600">
-            {isDragActive ? 'Drop the files here...' : 'Drag and drop files here, or click to select files'}
+            {!selectedFileType 
+              ? 'Please select a file type before uploading'
+              : isDragActive 
+                ? 'Drop the files here...' 
+                : 'Drag and drop files here, or click to select files'
+            }
           </p>
         </div>
       </div>

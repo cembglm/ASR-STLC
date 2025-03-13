@@ -21,6 +21,9 @@ export default function App() {
   const [fileProcessMappings, setFileProcessMappings] = useState({});
   const [selectedFileIds, setSelectedFileIds] = useState(new Set());
 
+  // Output state'ini bir obje olarak tutacağız
+  const [outputs, setOutputs] = useState({});
+
   // Combined file upload function that supports both direct and centralized file management
   const handleFileUpload = async (processIdOrFiles, fileTypeOrInfo) => {
     console.log('[App] File upload triggered');
@@ -297,15 +300,18 @@ export default function App() {
       if (processId === 'code-review') {
         console.log('[App] Running code review');
         result = await processService.runCodeReview(files);
-        setOutput({
-          content: result.reviews.map(review => 
-            `## ${review.file_name}\n\n${review.review}\n\n---\n`
-          ).join('\n'),
-          status: 'completed',
-          processType: 'Code Review',
-          processId: processId,
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          [processId]: {
+            content: result.reviews.map(review => 
+              `## ${review.file_name}\n\n${review.review}\n\n---\n`
+            ).join('\n'),
+            status: 'completed',
+            processType: 'Code Review',
+            processId: processId,
+            timestamp: new Date().toISOString()
+          }
+        }));
         console.log('[App] Code review completed, output set');
       } else if (processId === 'test-planning') {
         console.log('[App] Running test planning');
@@ -331,63 +337,81 @@ export default function App() {
   
         result = await response.json();
         console.log(`[App] Backend response: ${JSON.stringify(result)}`);
-        setOutput({
-          content: result.error ? `Error: ${result.error}` : result.result,
-          status: result.error ? 'error' : 'completed',
-          processType: 'Test Planning',
-          processId: processId,
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          [processId]: {
+            content: result.error ? `Error: ${result.error}` : result.result,
+            status: result.error ? 'error' : 'completed',
+            processType: 'Test Planning',
+            processId: processId,
+            timestamp: new Date().toISOString()
+          }
+        }));
         console.log('[App] Test planning completed, output set');
       }else if (processId === 'requirement-analysis') {
         console.log('[App] Running requirement analysis');
         try {
             const result = await processService.runRequirementAnalysis(files, null);
             console.log('[App] Backend response from requirement analysis:', result);
-            setOutput({
-                content: result, // raw_result string'i doğrudan content olarak
-                status: 'completed',
-                processType: 'Requirement Analysis',
-                processId: processId,
-                timestamp: new Date().toISOString()
-            });
+            setOutputs(prev => ({
+                ...prev,
+                [processId]: {
+                    content: result, // raw_result string'i doğrudan content olarak
+                    status: 'completed',
+                    processType: 'Requirement Analysis',
+                    processId: processId,
+                    timestamp: new Date().toISOString()
+                }
+            }));
             console.log('[App] Requirement analysis completed, output set');
         } catch (error) {
             console.error('[App] Error in requirement analysis:', error);
-            setOutput({
-                content: `Hata: ${error.message}`,
-                status: 'error',
-                processType: 'Requirement Analysis',
-                processId: processId,
-                timestamp: new Date().toISOString()
-            });
+            setOutputs(prev => ({
+                ...prev,
+                [processId]: {
+                    content: `Hata: ${error.message}`,
+                    status: 'error',
+                    processType: 'Requirement Analysis',
+                    processId: processId,
+                    timestamp: new Date().toISOString()
+                }
+            }));
         }
     }else if (processId === 'environment-setup') {
-        setOutput({
-          content: `# Environment Setup Completed\n\n## Development Environment\n- Node.js v16.14.2\n- React v18.2.0\n- PostgreSQL v14.3\n\n## Test Environment\n- Jest v28.1.0\n- Cypress v10.3.0\n\n## Configuration\n\`\`\`\nAPP_PORT=3000\nDB_CONNECTION=postgresql://user:password@localhost:5432/testdb\nJWT_SECRET=test_secret_key\n\`\`\``,
-          status: 'completed',
-          processType: 'Environment Setup',
-          processId: processId,
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          [processId]: {
+            content: `# Environment Setup Completed\n\n## Development Environment\n- Node.js v16.14.2\n- React v18.2.0\n- PostgreSQL v14.3\n\n## Test Environment\n- Jest v28.1.0\n- Cypress v10.3.0\n\n## Configuration\n\`\`\`\nAPP_PORT=3000\nDB_CONNECTION=postgresql://user:password@localhost:5432/testdb\nJWT_SECRET=test_secret_key\n\`\`\``,
+            status: 'completed',
+            processType: 'Environment Setup',
+            processId: processId,
+            timestamp: new Date().toISOString()
+          }
+        }));
         console.log('[App] Environment setup completed, output set');
       } else if (processId === 'test-scenario-generation') {
-        setOutput({
-          content: `# Generated Test Scenarios\n\n## Authentication Tests\n1. TC001: Valid login with correct credentials\n2. TC002: Invalid login with incorrect password\n3. TC003: Password reset functionality\n\n## Data Management Tests\n1. TC004: Create new record\n2. TC005: Update existing record\n3. TC006: Delete record\n\n## Integration Tests\n1. TC007: End-to-end user registration flow\n2. TC008: Complete order processing workflow`,
-          status: 'completed',
-          processType: 'Test Scenario Generation',
-          processId: processId,
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          [processId]: {
+            content: `# Generated Test Scenarios\n\n## Authentication Tests\n1. TC001: Valid login with correct credentials\n2. TC002: Invalid login with incorrect password\n3. TC003: Password reset functionality\n\n## Data Management Tests\n1. TC004: Create new record\n2. TC005: Update existing record\n3. TC006: Delete record\n\n## Integration Tests\n1. TC007: End-to-end user registration flow\n2. TC008: Complete order processing workflow`,
+            status: 'completed',
+            processType: 'Test Scenario Generation',
+            processId: processId,
+            timestamp: new Date().toISOString()
+          }
+        }));
         console.log('[App] Test scenario generation completed, output set');
       } else {
-        setOutput({
-          content: `# ${processId} Process Output\n\nSuccessfully completed the ${processId} process.\n\n## Details\n- Process ID: ${processId}\n- Timestamp: ${new Date().toISOString()}\n- Files processed: ${files.length}\n\n## Summary\nAll operations completed successfully with no errors.`,
-          status: 'completed',
-          processType: processId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-          processId: processId,
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          [processId]: {
+            content: `# ${processId} Process Output\n\nSuccessfully completed the ${processId} process.\n\n## Details\n- Process ID: ${processId}\n- Timestamp: ${new Date().toISOString()}\n- Files processed: ${files.length}\n\n## Summary\nAll operations completed successfully with no errors.`,
+            status: 'completed',
+            processType: processId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            processId: processId,
+            timestamp: new Date().toISOString()
+          }
+        }));
         console.log(`[App] Process ${processId} completed, output set`);
       }
   
@@ -402,13 +426,16 @@ export default function App() {
         ...prev,
         [processId]: 'error'
       }));
-      setOutput({
-        content: `Error: ${error.message}`,
-        status: 'error',
-        processType: processes.find(p => p.id === processId)?.name || 'Unknown Process',
-        processId: processId,
-        timestamp: new Date().toISOString()
-      });
+      setOutputs(prev => ({
+        ...prev,
+        [processId]: {
+          content: `Error: ${error.message}`,
+          status: 'error',
+          processType: processes.find(p => p.id === processId)?.name || 'Unknown Process',
+          processId: processId,
+          timestamp: new Date().toISOString()
+        }
+      }));
     }
   };
 
@@ -460,13 +487,16 @@ export default function App() {
         }));
         
         // Hata mesajını çıktı olarak göster
-        setOutput({
-          content: `Pipeline Error at ${processId}: ${error.message}`,
-          status: 'error',
-          processType: 'Pipeline',
-          processId: 'pipeline',
-          timestamp: new Date().toISOString()
-        });
+        setOutputs(prev => ({
+          ...prev,
+          pipeline: {
+            content: `Pipeline Error at ${processId}: ${error.message}`,
+            status: 'error',
+            processType: 'Pipeline',
+            processId: 'pipeline',
+            timestamp: new Date().toISOString()
+          }
+        }));
         
         break;
       }
@@ -504,7 +534,8 @@ export default function App() {
           pipelineStatus={pipelineStatus}
           onRun={handleRun}
           validationError={validationError}
-          output={output}
+          output={outputs[activeTab] || null}
+          outputs={outputs}
           isPipelineEnabled={isPipelineEnabled}
           onTogglePipeline={setIsPipelineEnabled}
           managedFiles={managedFiles}
