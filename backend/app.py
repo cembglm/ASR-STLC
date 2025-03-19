@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse
 # Import process handlers
 from stlc.code_review import run_step as run_code_review
 from stlc.requirement_analysis import run_step as run_requirement_analysis
+from stlc.test_planning import run_step as run_test_planning
 
 # Set up logging
 logger = logging.getLogger("app")
@@ -25,7 +26,8 @@ logging.basicConfig(level=logging.INFO)
 # Define process handlers dictionary
 PROCESS_HANDLERS = {
     'code-review': run_code_review,
-    'requirement-analysis': run_requirement_analysis
+    'requirement-analysis': run_requirement_analysis,
+    'test-planning': run_test_planning  # Yeni işlem eklendi
 }
 
 app = FastAPI(
